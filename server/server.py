@@ -27,19 +27,19 @@ async def __progress():
     phase = progress_state["phase"]
 
     if phase == "scraping":
-        return {"action": "scraping all the listings"}
+        return {"phase": "scraping all the listings"}
 
     if phase == "details":
         total = progress_state["total"] or 1  # avoid div-by-zero
         percent = int(progress_state["current"] / total * 100)
         return {
-            "action": "getting listing details",
+            "phase": "getting listing details",
             "percent": percent,
             "listings": progress_state["listings"],
         }
 
     # Anything else ('idle' or 'done')
-    return {"action": phase}
+    return {"phase": phase}
 
 
 if __name__ == "__main__":
