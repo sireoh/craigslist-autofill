@@ -1,0 +1,42 @@
+[
+  {
+    "id": "string",
+    "settings": {
+      "header": {
+        "city": "string",
+        "zip_code": "string"
+      },
+      "details": {
+        "bedrooms": "number",
+        "bathrooms": "number"
+      },
+      "contact": {
+        "phone_number": "string",
+        "contact_name": "string"
+      },
+      "craigslist_query": {
+        "query": "string"
+      }
+    }
+  },
+  {
+    "id": "string",
+    "settings": {
+      "header": {
+        "city": "string",
+        "zip_code": "string"
+      },
+      "details": {
+        "bedrooms": "number",
+        "bathrooms": "number"
+      },
+      "contact": {
+        "phone_number": "string",
+        "contact_name": "string"
+      },
+      "craigslist_query": {
+        "query": "string"
+      }
+    }
+  }
+]

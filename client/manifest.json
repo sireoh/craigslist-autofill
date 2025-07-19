@@ -21,5 +21,12 @@
     "default_icon": "icons/icon-32.png",
     "default_title": "Craigslist Autofill",
     "default_popup": "popup/popup.html"
-  }
+  },
+
+  "background": {
+    "scripts": ["presets_dal.js"],
+    "persistent": false
+  },
+
+  "permissions": ["storage"]
 }
