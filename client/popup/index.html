@@ -1,0 +1,123 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Popup</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <!-- Connect to Server -->
+    <div name="connect_to_server">
+      <label>connect to server</label>
+      <form id="connect_to_server_form" style="display:flex; width:100%;">
+        <input placeholder="https://localhost:5964/" style="flex:1;"/>
+        <button type="submit">Connect</button>
+      </form>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border-top: 1px solid #333"/>
+
+    <!-- Main -->
+    <div name="main">
+      <div name="header" style="display:flex; justify-content: space-between;">
+        <small id="is_server_connected">🔴 Not connected to any servers</small>
+        <button>⚙️</button>
+      </div>
+      <div name="main_container" style="display:grid">
+        <label>Create a listing:</label>
+        <div style="display:flex; width:100%">
+          <select id="create_listing" style="flex:1;">
+            <option value="1" selected>currently_selected_preset</option>
+            <option value="2">preset 1</option>
+            <option value="3">preset 2</option>
+            <option value="4">preset 3</option>
+            <option value="5">preset 4</option>
+            <option value="6">preset 5</option>
+          </select>
+          <button>📄</button>
+          <button>🗑️</button>
+          <button>✏️</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border-top: 1px solid #333"/>
+
+    <!-- Main -->
+    <div name="edit_export">
+      <form name="edit_export_container" style="display:grid; justify-items: center;">
+        <!-- Header -->
+         <div name="edit_export_header">
+            <label>header</label>
+            <div style="display:flex">
+              <input placeholder="city"/>
+              <input placeholder="zip_code"/>
+            </div>
+         </div>
+
+        <!-- Details -->
+         <div name="edit_export_details">
+            <label>details</label>
+            <div style="display:flex">
+              <input placeholder="bedrooms" type="number"/>
+              <input placeholder="bathrooms" type="number"/>
+            </div>
+         </div>
+
+         <!-- Contact -->
+         <div name="edit_export_contact">
+            <label>contact</label>
+            <div style="display:flex">
+              <input placeholder="phone_num"/>
+              <input placeholder="contact_name"/>
+            </div>
+         </div>
+
+        <!-- Craigslist Query -->
+         <div name="edit_export_craigslist_query" style="text-align: center;">
+            <label>craigslist query</label>
+            <div style="display:flex">
+              <input placeholder="input query ..." value="2 bedroom basement"/>
+            </div>
+         </div>
+
+         <!-- Footer Buttons -->
+         <div name="edit_export_footer_buttons">
+            <div style="display:flex">
+              <button>Save</button>
+              <button>Export</button>
+            </div>
+         </div>
+      </form>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border-top: 1px solid #333"/>
+
+    <!-- Progress Bar -->
+    <div name="progress" style="display:grid; width: 100%;">
+      <span id="progress_text">phase: in_progress</span>
+      <input type="range" min="0" max="100" value="25" style="display:flex; flex:1;">
+      <small id="progress_value" style="text-align: end;">25%</small>
+      <span>Download: <a href="#">data_0001.json</a></span>
+    </div>
+
+    <!-- Divider -->
+    <hr style="border-top: 1px solid #333"/>
+
+    <!-- Auto-Filler -->
+    <div name="auto_filler" style="display:grid; width: 100%; justify-items: center;">
+      <div name="auto_filler_main_row" style="display:flex">
+        <button>import data</button>
+        <small style="margin-left: 4px; margin-top: 2px">data_0001.json</small>
+      </div>
+      <button style="font-size: larger; margin-top: 8px;">Fill form</button>
+    </div>
+  
+    <!-- Scripts -->
+    <script src="popup.js" defer></script>
+  </body>
+</html>

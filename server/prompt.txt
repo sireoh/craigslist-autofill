@@ -1,30 +1,34 @@
 using this data.json file, create a really good posting, taking all the best elements from the data and create a .ini file:
 
-[listing]
-title={inspired title}
-city={city}
-zip_code={zip_code}
+posting_title={inspired title}
+text={inspired best listing details here}
+rent = {reasonable price for landlord and tenant, such that the listing can gain good traction}
+
+[header]
+posting_title={posting_title}	 # From Server
+city={city}						 # From Client
+zip_code={zip_code}				 # From Client
 
 [body]
-text={generate the best listing details here}
+text={text}						 # From Server
 
 [details]
-rent={reasonable price for landlord and tenant, such that the listing can gain good traction}
-per=month
-housing_type=house
-laundry=in_buiding
-parking=carport
-bedrooms=2
-bathrooms=1
+rent={rent}
+per=month						 # DEFAULTS
+housing_type=house				 # DEFAULTS
+laundry=in_buiding 				 # DEFAULTS
+parking=carport 				 # DEFAULTS
+bedrooms={bedrooms_amt}			 # From Client
+bathrooms={bathrooms_amt}		 # From Client
 
 [checkboxes]
-no_smoking=true
+no_smoking=true 				 # DEFAULTS
 
 [phone/text]
-show_phone=true
-phone_calls=true
-text/sms=true
+show_phone=true 				 # DEFAULTS
+phone_calls=true 				 # DEFAULTS
+text/sms=true					 # DEFAULTS
 
 [contact]
-phone_number={phone_number}
-contact_name={contact_name}
+phone_number={phone_number}		 # From Client
+contact_name={contact_name}		 # From Client
