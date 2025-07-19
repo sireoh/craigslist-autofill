@@ -13,13 +13,13 @@
   "content_scripts": [
     {
       "matches": ["*://*.mozilla.org/*"],
-      "js": ["criagslist_autofill.js"]
+      "js": ["craigslist_autofill.js"]
     }
   ],
 
   "browser_action": {
     "default_icon": "icons/icon-32.png",
     "default_title": "Craigslist Autofill",
-    "default_popup": "popup/index.html"
+    "default_popup": "popup/popup.html"
   }
 }
