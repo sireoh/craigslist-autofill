@@ -128,8 +128,22 @@ function __init() {
     ELEMENTS.progressValue.textContent = `0%`;
     ELEMENTS.progressText.textContent = `phase: starting`;
 
-    const intervalId = setInterval(() => pollProgress(intervalId), 500);
-    pollProgress(intervalId);
+    const intervalId = setInterval(() => Hooks.pollProgress(intervalId), 1250);
+    Hooks.pollProgress(intervalId);
+  });
+
+  // Start polling when the "Scrape Data" button is clicked
+  const fetchOutputsButton = ELEMENTS.progressForm.elements["fetch_outputs_button"];
+  fetchOutputsButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const outputs = await ServerDAL.getOutputs();
+
+    if (outputs.message == "success") {
+      Helpers.updateDownloadContainerElement(outputs);
+    } else {
+      console.log("[Error]: ", outputs.message)
+    }
   });
 
   // Fill form on first load

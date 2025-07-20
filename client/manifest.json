@@ -24,7 +24,7 @@
   },
 
   "background": {
-    "scripts": ["presets_dal.js", "main_dal.js"],
+    "scripts": ["presets_dal.js", "main_dal.js", "server_dal.js"],
     "persistent": false
   },
 

@@ -100,9 +100,12 @@
       <span id="progress_text">phase: idle</span>
       <input type="range" min="0" max="100" value="0" style="display:flex; flex:1;" name="progress_bar">
       <small style="text-align: end;" id="progress_value">0%</small>
-      <button name="scrape_button">Scrape Data</button>
-      <span>Download: <a href="#">data_0001.json</a></span>
-    </form>
+      <div style="display:flex;">
+        <button name="scrape_button" style="flex:2">Scrape Data</button>
+        <button name="fetch_outputs_button" style="flex:1">Fetch Outputs</button>
+      </div>
+      <div id="download_container"></div>
+    </div>
 
     <!-- Divider -->
     <hr style="border-top: 1px solid #333"/>
@@ -110,8 +113,8 @@
     <!-- Auto-Filler -->
     <div name="auto_filler" style="display:grid; width: 100%; justify-items: center;">
       <div name="auto_filler_main_row" style="display:flex">
-        <button>import data</button>
-        <small style="margin-left: 4px; margin-top: 2px">data_0001.json</small>
+        <button>Import Data</button>
+        <small style="margin-left: 4px; margin-top: 2px;">data_0001.json</small>
       </div>
       <button style="font-size: larger; margin-top: 8px;">Fill form</button>
     </div>
@@ -123,6 +126,7 @@
     <script src="../main_dal.js" defer></script>
     <script src="../presets_dal.js" defer></script>
     <script src="../helper.js" defer></script>
+    <script src="../server_dal.js" defer></script>
     <script src="popup.js" defer></script>
   </body>
 </html>

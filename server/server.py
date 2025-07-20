@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 
 from models import ScrapeRequest
+from progress_hook import progress
 from scrape_dal import start_scrape
-from store import progress_state
 from fastapi.middleware.cors import CORSMiddleware
+
+from server_dal import delete_output_by_name, get_outputs, serve_output_file
 
 app = FastAPI()
 port = 5694
@@ -35,22 +37,22 @@ async def __progress():
     Poll-able endpoint for the client to track progress.
     Response shape depends on current phase.
     """
-    phase = progress_state["phase"]
+    return progress()
 
-    if phase == "scraping":
-        return {"phase": "scraping all the listings"}
 
-    if phase == "details":
-        total = progress_state["total"] or 1  # avoid div-by-zero
-        percent = int(progress_state["current"] / total * 100)
-        return {
-            "phase": "getting listing details",
-            "percent": percent,
-            "listings": progress_state["listings"],
-        }
+@app.get("/outputs")
+async def __outputs():
+    return get_outputs()
 
-    # Anything else ('idle' or 'done')
-    return {"phase": phase}
+
+@app.get("/outputs/{filename}")
+async def __serve_output_file(filename):
+    return serve_output_file(filename)
+
+
+@app.delete("/outputs/{filename}")
+async def __delete_output_by_name(filename):
+    return delete_output_by_name(filename)
 
 
 if __name__ == "__main__":
