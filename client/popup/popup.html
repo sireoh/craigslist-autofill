@@ -11,7 +11,7 @@
     <div name="connect_to_server">
       <label>connect to server</label>
       <form id="connect_to_server_form" style="display:flex; width:100%;">
-        <input placeholder="https://localhost:5964/" style="flex:1;"/>
+        <input name="server_host" placeholder="https://localhost:5964/ ..." style="flex:1;"/>
         <button type="submit">Connect</button>
       </form>
     </div>
@@ -118,6 +118,8 @@
     </div>
   
     <!-- Scripts -->
+    <script src="../store.js" defer></script>
+    <script src="../main_dal.js" defer></script>
     <script src="popup.js" defer></script>
   </body>
 </html>

@@ -1,7 +1,7 @@
 // main_dal.js
 
 const MainDAL = {
-  // Get all presets
+  // Get item by name
   async getItemByName(name) {
     try {
       const result = await browser.storage.local.get(name);
@@ -12,7 +12,7 @@ const MainDAL = {
     }
   },
 
-  // Set item
+  // Set item by name
   async setItemByName(name, value) {
     try {
       await browser.storage.local.set({ [name]: value });
