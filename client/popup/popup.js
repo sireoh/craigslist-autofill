@@ -116,6 +116,22 @@ function __init() {
     __fill_in_form_with_data(presetData);
   });
 
+  // Setup Progress Handler
+  // Start polling when the "Scrape Data" button is clicked
+  const scrapeButton = ELEMENTS.progressForm.elements["scrape_button"];
+  scrapeButton.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Reset UI immediately
+    const form = ELEMENTS.progressForm.elements;
+    form["progress_bar"].value = 0;
+    ELEMENTS.progressValue.textContent = `0%`;
+    ELEMENTS.progressText.textContent = `phase: starting`;
+
+    const intervalId = setInterval(() => pollProgress(intervalId), 500);
+    pollProgress(intervalId);
+  });
+
   // Fill form on first load
   const presetData = state.presets.find(p => p.id === state.selectedPreset);
   __fill_in_form_with_data(presetData);

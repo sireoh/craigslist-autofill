@@ -96,12 +96,13 @@
     <hr style="border-top: 1px solid #333"/>
 
     <!-- Progress Bar -->
-    <div name="progress" style="display:grid; width: 100%;">
-      <span id="progress_text">phase: in_progress</span>
-      <input type="range" min="0" max="100" value="25" style="display:flex; flex:1;">
-      <small id="progress_value" style="text-align: end;">25%</small>
+    <form id="progress_form" style="display:grid; width: 100%;">
+      <span id="progress_text">phase: idle</span>
+      <input type="range" min="0" max="100" value="0" style="display:flex; flex:1;" name="progress_bar">
+      <small style="text-align: end;" id="progress_value">0%</small>
+      <button name="scrape_button">Scrape Data</button>
       <span>Download: <a href="#">data_0001.json</a></span>
-    </div>
+    </form>
 
     <!-- Divider -->
     <hr style="border-top: 1px solid #333"/>
@@ -116,7 +117,8 @@
     </div>
   
     <!-- Scripts -->
-     <script src="../constants.js" defer></script>
+    <script src="../hooks.js" defer></script>
+    <script src="../constants.js" defer></script>
     <script src="../store.js" defer></script>
     <script src="../main_dal.js" defer></script>
     <script src="../presets_dal.js" defer></script>

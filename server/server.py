@@ -3,9 +3,20 @@ from fastapi import FastAPI
 from models import ScrapeRequest
 from scrape_dal import start_scrape
 from store import progress_state
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 port = 5694
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "*"
+    ],  # You can replace "*" with a specific origin like "http://localhost:3000"
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.post("/start_scrape")
