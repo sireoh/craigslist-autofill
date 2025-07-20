@@ -28,5 +28,9 @@
     "persistent": false
   },
 
-  "permissions": ["storage"]
+  "permissions": ["storage"],
+
+  "web_accessible_resources": [
+    "file_import.html"
+  ]
 }

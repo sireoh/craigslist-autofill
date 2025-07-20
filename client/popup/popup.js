@@ -74,6 +74,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('Added preset:', presetData);
   });
 
+  // Handle auto filler form click
+  ELEMENTS.importDataButton.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Open in new tab
+    window.open(
+        browser.runtime.getURL("popup/file_import.html"),
+        "_blank",
+        "width=350,height=150,noopener,noreferrer"
+      );
+  });
+
   // ==========================
   // Subscribe to store updates
   // ==========================
