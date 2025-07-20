@@ -3,6 +3,8 @@
 const state = {
   isConnected: false,
   serverHost: "",
+  selectedPreset: "",
+  presetData: {}
 };
 
 
