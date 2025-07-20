@@ -18,23 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Update the frontend
   __init();
 
-  // Handle connection form submit
-  ELEMENTS.presetsForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    // Access the input named 'server_host'
-    const selectedPreset = ELEMENTS.presetsForm.elements['presets_select'].value;
-
-    // Set to the main_dal
-    MainDAL.setItemByName("selectedPreset", selectedPreset);
-
-    // Update Store
-    Store.update("selectedPreset", selectedPreset)
-
-    // [DEBUG] Log to console
-    console.log('Selected value:', selectedPreset);
-  });
-
   // Handle presets form submit
   ELEMENTS.connectForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -119,10 +102,14 @@ function __init() {
   presetsSelect.addEventListener('change', (e) => {
     e.preventDefault();
 
+    // Change the selected value
     const selected = e.target.value;
 
     // Update selected preset in Store
     Store.update("selectedPreset", selected);
+
+    // Set to the main_dal
+    MainDAL.setItemByName("selectedPreset", selected);
 
     // Fill the form with new preset
     const presetData = Store.getState().presets.find(p => p.id === selected);
