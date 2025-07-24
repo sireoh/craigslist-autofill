@@ -1,160 +1,76 @@
 import json
-import random
-from threading import Thread
-from typing import List, cast
-import requests
-from bs4 import BeautifulSoup, Tag
-import time
+from typing import cast
 from helpers import Helpers
-from models import ScrapeRequest
-from store import progress_state
-from constants import HEADERS, OUTPUT_DIR
+from models import GatherRequest
+from bs4 import BeautifulSoup, ResultSet, Tag
+import requests
+from constants import HEADERS, LISTINGS_CONFIG_PATH, LISTINGS_DIR
 
-DEBUG = False
+
+def scrape_data():
+    pass
 
 
-def start_scrape(req: ScrapeRequest) -> None:
+def gather_listings(req: GatherRequest):
     """
-    Kick off the two-phase scrape in a background thread.
-    Phase 1: collect listing URLs
-    Phase 2: fetch details for a random sample of those URLs
+    Gather data from individual listings based on the provided query.
+    For now, just logs the URLs that would be scraped.
     """
-    # ---- initialise progress state ----
-    progress_state.update(
-        {
-            "phase": "scraping",
-            "current": 0,
-            "total": 0,
-            "listings": [],
-        }
-    )
-
-    def run_scraper() -> None:
-        # Phase-1 & Phase-2 combined helper
-        __get_all_listings(
-            query=req.query,
-            delay=req.delay or 3,
-            max_results=req.max_results or 10,
-        )
-        progress_state["phase"] = "done"
-
-    Thread(target=run_scraper, daemon=True).start()
-
-
-def __get_all_listings(
-    *,
-    query: str,
-    delay: int = 3,
-    max_results: int = 10,
-) -> List[dict]:
-    """
-    Returns a list of `max_results` listing-detail dicts.
-    Progress is exposed through the global `progress_state`.
-    """
-    # -----------------------------------------------------------------
-    # Phase 1 ─ scrape the search results page for *all* listing URLs
-    # -----------------------------------------------------------------
-    url = (
-        "https://vancouver.craigslist.org/search/rds/apa"
-        "?housing_type=6&laundry=2"
-        f"&query={query}&rent_period=3&sort=rel"
-    )
+    # Build the search URL
+    url = f"https://vancouver.craigslist.org/search/hhh?query={req.query}#search=2~gallery~0"
 
     try:
         resp = requests.get(url, headers=HEADERS)
         resp.raise_for_status()
-    except requests.RequestException:
-        progress_state["phase"] = "done"
-        return []
+    except requests.RequestException as e:
+        print(f"Request failed: {e}")
+        return {"message": "Failed to fetch search results"}
 
     soup = BeautifulSoup(resp.text, "html.parser")
     results = soup.find("ol", class_="cl-static-search-results")
-    if not isinstance(results, Tag):
-        progress_state["phase"] = "done"
-        return []
+    if results is None or not isinstance(results, Tag):
+        return {"message": "No search results found"}
 
-    anchors = cast(
-        List[Tag],
-        results.find_all("a", href=True, recursive=True),
-    )
-    all_urls = [
-        (
-            str(a["href"])
-            if str(a["href"]).startswith("http")
-            else f'https://vancouver.craigslist.org{str(a["href"])}'
+    # Cast to ResultSet[Tag] to satisfy type checker
+    anchors = cast(ResultSet[Tag], results.find_all("a", href=True, recursive=True))
+    all_urls: list[str] = []
+
+    # Default to 65 if max_results is None (as per GatherRequest model)
+    max_results = req.max_results if req.max_results is not None else 65
+    # Ensure we don't exceed available listings
+    max_results = min(max_results, len(anchors))
+
+    print(f"Max results setting: {max_results}, Total anchors found: {len(anchors)}")
+
+    for a in anchors[:max_results]:
+        href = a["href"]
+        href_str = str(href)
+        full_url = (
+            href_str
+            if href_str.startswith("http")
+            else f"https://vancouver.craigslist.org{href_str}"
         )
-        for a in anchors
-    ]
+        all_urls.append(full_url)
+
+    # Create directories if they don't exist
+    LISTINGS_DIR.mkdir(parents=True, exist_ok=True)
+
+    # Get current index and create filename
+    current_index = Helpers.get_current_index(LISTINGS_CONFIG_PATH)
+    padded_index = f"{current_index:02d}"  # Formats as 00, 01, etc.
+    output_filename = LISTINGS_DIR / f"listings_{padded_index}.json"
+
+    # Write the URLs to file
+    with open(output_filename, "w") as f:
+        json.dump({"data": all_urls}, f, indent=2)
+
+    # Increment the index for next time
+    Helpers.increment_index(LISTINGS_CONFIG_PATH)
+
     if not all_urls:
-        progress_state["phase"] = "done"
-        return []
-
-    # -----------------------------------------------------------------
-    # Phase 2 ─ fetch `max_results` random listings & emit progress
-    # -----------------------------------------------------------------
-    selected_urls = random.sample(all_urls, min(max_results, len(all_urls)))
-
-    progress_state.update(
-        {
-            "phase": "details",
-            "current": 0,
-            "total": len(selected_urls),
-            "listings": [],
-        }
-    )
-
-    listings: List[dict] = []
-    for idx, link in enumerate(selected_urls, 1):
-        details = __get_listing_details(link)
-        if details:
-            listings.append(details)
-            progress_state["listings"].append(details)
-
-        progress_state["current"] = idx
-
-        if idx < len(selected_urls):  # stagger requests a bit
-            time.sleep(random.uniform(delay - 0.5, delay + 0.5))
-
-    # Save final result to file
-    output_index = Helpers.get_current_index()
-    output_file = OUTPUT_DIR / f"data_{output_index:04d}.json"
-    OUTPUT_DIR.mkdir(exist_ok=True)
-
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(listings, f, ensure_ascii=False, indent=2)
-
-    Helpers.increment_index()
-
-    return listings
-
-
-def __get_listing_details(link: str) -> dict:
-    try:
-        resp = requests.get(link, headers=HEADERS)
-        resp.raise_for_status()
-    except requests.RequestException:
-        return {}
-
-    soup = BeautifulSoup(resp.text, "html.parser")
-
-    title = soup.select_one("#titletextonly")
-    price = soup.select_one("span.price")
-    posted_date = soup.select_one("p.postinginfo time")
-    body = soup.select_one("section#postingbody")
-
-    image_urls = [img["src"] for img in soup.select(".gallery img") if img.get("src")]
+        return {"message": "No listings found in search results"}
 
     return {
-        "title": title.get_text(strip=True) if title else "",
-        "price": price.get_text(strip=True) if price else "",
-        "posted_date": posted_date["datetime"] if posted_date else "",
-        "body": (
-            body.get_text(separator="\n", strip=True).replace(
-                "QR Code Link to This Post", ""
-            )
-            if body
-            else ""
-        ),
-        "images": image_urls,
-        "link": link,
+        "message": f"Found {len(all_urls)} listings to scrape",
+        "output_file": str(output_filename),
     }

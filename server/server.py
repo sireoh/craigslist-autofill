@@ -1,9 +1,10 @@
+from threading import Thread
 from fastapi import FastAPI
 
 from client_dal import update_config
-from models import PresetData, ScrapeRequest
+from models import PresetData, ScrapeRequest, GatherRequest
 from progress_hook import progress
-from scrape_dal import start_scrape
+from scrape_dal import gather_listings, scrape_data
 from fastapi.middleware.cors import CORSMiddleware
 
 from server_dal import delete_output_by_name, get_outputs, serve_output_file
@@ -22,14 +23,14 @@ app.add_middleware(
 )
 
 
-@app.post("/start_scrape")
-async def __start_scrape(req: ScrapeRequest):
-    """
-    Kick off a background scrape job.
-    Body must match `ScrapeRequest`.
-    """
-    start_scrape(req)
-    return {"message": "Scraping started"}
+@app.post("/gather_listings")
+async def __gather_listings(req: GatherRequest):
+    return gather_listings(req)
+
+
+@app.post("/scrape_data")
+async def __scrape_data(req: ScrapeRequest):
+    return scrape_data(req)
 
 
 @app.get("/progress")

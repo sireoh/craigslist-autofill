@@ -6,10 +6,9 @@ from pydantic import BaseModel
 ################################################################################
 
 
-class ScrapeRequest(BaseModel):
+class GatherRequest(BaseModel):
     query: str
-    max_results: Optional[int] = 10
-    delay: Optional[int] = 3
+    max_results: Optional[int] = 65
 
 
 ################################################################################

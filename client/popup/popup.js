@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Handle presets form submit
   ELEMENTS.connectForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    
+
     // Access the input named 'server_host'
     const s = ELEMENTS.connectForm.elements['server_host'].value;
 
@@ -44,12 +44,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const db = {
       selectedPreset: await MainDAL.getItemByName("selectedPreset")
     }
-    
+
     // Access the input named 'server_host'
     const presetData = {
       "id": db.selectedPreset,
       "settings": {
-        "header" : {
+        "header": {
           "city": ELEMENTS.editExportsForm.elements['city'].value,
           "zip_code": ELEMENTS.editExportsForm.elements['zip_code'].value,
         },
@@ -84,10 +84,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Open in new tab
     window.open(
-        browser.runtime.getURL("popup/file_import.html"),
-        "_blank",
-        "width=350,height=150,noopener,noreferrer"
-      );
+      browser.runtime.getURL("popup/file_import.html"),
+      "_blank",
+      "width=350,height=150,noopener,noreferrer"
+    );
   });
 
   // ==========================
@@ -134,6 +134,21 @@ function __init() {
 
   // Setup Progress Handler
   // Start polling when the "Scrape Data" button is clicked
+  const gatherButton = ELEMENTS.progressForm.elements["gather_button"];
+  gatherButton.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Reset UI immediately
+    const form = ELEMENTS.progressForm.elements;
+    form["progress_bar"].value = 0;
+    ELEMENTS.progressValue.textContent = `0%`;
+    ELEMENTS.progressText.textContent = `phase: starting`;
+
+    const intervalId = setInterval(() => Hooks.pollProgress(intervalId), 1250);
+    Hooks.pollProgress(intervalId);
+  });
+
+  // Start polling when the "Scrape Data" button is clicked
   const scrapeButton = ELEMENTS.progressForm.elements["scrape_button"];
   scrapeButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -148,7 +163,6 @@ function __init() {
     Hooks.pollProgress(intervalId);
   });
 
-  // Start polling when the "Scrape Data" button is clicked
   const fetchOutputsButton = ELEMENTS.progressForm.elements["fetch_outputs_button"];
   fetchOutputsButton.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -173,7 +187,7 @@ function __fill_in_form_with_data(presetData) {
   // If presetData is missing or malformed, clear the form
   if (!presetData || !presetData.settings) {
     console.warn("No preset or invalid data provided — clearing form.");
-    
+
     form['city'].value = "";
     form['zip_code'].value = "";
     form['bedrooms'].value = "";
