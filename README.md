@@ -25,3 +25,12 @@ curl -X POST http://localhost:5694/start_scrape \
 ```bash
 https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite?tab=readme-ov-file#installation-firefox
 ```
+
+# setup server
+
+```shell
+python -m venv .venv
+.venv/Scripts/activate.ps1
+pip install requirements.txt
+python server.py
+```

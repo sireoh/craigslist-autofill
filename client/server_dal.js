@@ -30,6 +30,31 @@ const ServerDAL = {
       console.error(`Error deleting file "${filename}":`, error);
       return { message: "fail" };
     }
+  },
+
+  async updateConfig(presetData) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const configEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}config`;
+
+      const response = await fetch(configEndpoint, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(presetData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating config:", error);
+      return { status: "error", message: error.message };
+    }
   }
 };
 

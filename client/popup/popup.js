@@ -70,6 +70,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set to the main_dal
     PresetsDAL.savePreset(presetData);
 
+    // Send to server
+    const serverResponse = await ServerDAL.updateConfig(presetData);
+    console.log('Server response:', serverResponse);
+
     // [DEBUG] Log to console
     console.log('Added preset:', presetData);
   });

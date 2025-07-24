@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, status
 
-from models import ScrapeRequest
+from client_dal import update_config
+from models import PresetData, ScrapeRequest
 from progress_hook import progress
 from scrape_dal import start_scrape
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,6 +54,11 @@ async def __serve_output_file(filename):
 @app.delete("/outputs/{filename}")
 async def __delete_output_by_name(filename):
     return delete_output_by_name(filename)
+
+
+@app.patch("/config")
+async def __update_config(req: PresetData):
+    return update_config(req)
 
 
 if __name__ == "__main__":
