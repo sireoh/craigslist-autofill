@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 
 from client_dal import update_config
 from models import PresetData, ScrapeRequest
@@ -64,4 +64,4 @@ async def __update_config(req: PresetData):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="localhost", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=port)

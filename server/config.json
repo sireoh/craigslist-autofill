@@ -1,21 +1,20 @@
 {
-  "presets": {
-    "preset_00": {
-      "header": {
-        "city": "Surrey",
-        "zip_code": "V3R 1G6"
-      },
-      "details": {
-        "bedrooms": "2",
-        "bathrooms": "2"
-      },
-      "contact": {
-        "phone_number": "(604) 580-2186",
-        "contact_name": "Liana"
-      },
-      "craigslist_query": {
-        "query": "2 bedroom basement"
-      }
+  "id": "preset_00",
+  "settings": {
+    "header": {
+      "city": "Surrey",
+      "zip_code": "V3R 1G6"
+    },
+    "details": {
+      "bedrooms": "2",
+      "bathrooms": "2"
+    },
+    "contact": {
+      "phone_number": "(604) 580-2186",
+      "contact_name": "Vincent"
+    },
+    "craigslist_query": {
+      "query": "2 bedroom basement"
     }
   }
 }
