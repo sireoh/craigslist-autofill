@@ -2,7 +2,9 @@ from threading import Thread
 from typing import Optional
 from fastapi import FastAPI
 
+from ai_model_dal import prompt_ai
 from client_dal import load_output_file, update_config
+from helpers import Helpers
 from models import PresetData, GatherRequest, ScrapeRequest
 from progress_hook import progress
 from scrape_dal import gather_listings, scrape_data
@@ -29,6 +31,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+####################################################################
+# ==================== SCRAPING ENDPOINTS ======================== #
+####################################################################
 
 
 @app.post("/gather_listings")
@@ -61,6 +67,11 @@ async def __progress():
     return progress()
 
 
+####################################################################
+# ==================== OUTPUTS ENDPOINTS ========================= #
+####################################################################
+
+
 @app.get("/outputs")
 async def __outputs():
     return get_outputs()
@@ -81,8 +92,13 @@ async def __delete_output_by_name(filename):
     return delete_output_by_name(filename)
 
 
+####################################################################
+# =================== LISTINGS ENDPOINTS ========================= #
+####################################################################
+
+
 @app.get("/listings")
-async def __listings():
+async def __get_listings():
     return get_listings()
 
 
@@ -101,6 +117,11 @@ async def __delete_listing_by_name(filename):
     return delete_listing_by_name(filename)
 
 
+####################################################################
+# ==================== CONFIG ENDPOINTS ========================== #
+####################################################################
+
+
 @app.patch("/config")
 async def __update_config(req: PresetData):
     return update_config(req)
@@ -109,6 +130,26 @@ async def __update_config(req: PresetData):
 @app.patch("/config/{output_file}")
 async def __load_output_file(req: PresetData, output_file: str):
     return load_output_file(req, output_file)
+
+
+####################################################################
+# ======================= AI ENDPOINTS =========================== #
+####################################################################
+
+
+@app.get("/ai_model/prompt_ai")
+async def __prompt_ai():
+    return prompt_ai()
+
+
+@app.get("/ai_model/config")
+async def __get_config():
+    return Helpers.AI.get_config_file()
+
+
+@app.get("/ai_model/output/{output_file_id}")
+async def __get_output_file_by_id(output_file_id: str):
+    return Helpers.AI.get_output_file_by_id(output_file_id)
 
 
 if __name__ == "__main__":

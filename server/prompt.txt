@@ -1,34 +1,29 @@
-using this data.json file, create a really good posting, taking all the best elements from the data and create a .ini file:
+Goal: Create a well-crafted posting JSON file that synthesizes and optimizes data from output_XXXX.json and config.json
 
-posting_title={inspired title}
-text={inspired best listing details here}
+Use these output_XXXX.json and config.json files.
+Create a really good posting, taking all the best elements from the data and create a .json file:
+
 rent = {reasonable price for landlord and tenant, such that the listing can gain good traction}
+text = {ensure that you've read and acknowledged all the detail from the output_XXXX.json for best results. create a body text that incorporates all the best details from the listing such that the posting would perform well.}
 
-[header]
-posting_title={posting_title}	 # From Server
-city={city}						 # From Client
-zip_code={zip_code}				 # From Client
-
-[body]
-text={text}						 # From Server
-
-[details]
-rent={rent}
-per=month						 # DEFAULTS
-housing_type=house				 # DEFAULTS
-laundry=in_buiding 				 # DEFAULTS
-parking=carport 				 # DEFAULTS
-bedrooms={bedrooms_amt}			 # From Client
-bathrooms={bathrooms_amt}		 # From Client
-
-[checkboxes]
-no_smoking=true 				 # DEFAULTS
-
-[phone/text]
-show_phone=true 				 # DEFAULTS
-phone_calls=true 				 # DEFAULTS
-text/sms=true					 # DEFAULTS
-
-[contact]
-phone_number={phone_number}		 # From Client
-contact_name={contact_name}		 # From Client
+{
+  "settings": {
+    "header": {
+      "posting_title": {inspired title}
+      "city": FROM config.json,
+      "zip_code": FROM config.json
+    },
+    "body": {
+        "text": {text}
+    },
+    "details": {
+      "rent": {rent},
+      "bedrooms": FROM config.json,
+      "bathrooms": FROM config.json
+    },
+    "contact": {
+      "phone_number": FROM config.json,
+      "contact_name": FROM config.json
+    },
+  }
+}

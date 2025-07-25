@@ -2,7 +2,7 @@ import abc
 import json
 from pathlib import Path
 import random
-import time
+import os
 from typing import Dict, List
 
 from bs4 import BeautifulSoup
@@ -98,3 +98,26 @@ class Helpers(abc.ABC):
             "images": image_urls,
             "link": single_url,
         }
+
+    class AI(abc.ABC):
+        @staticmethod
+        def get_config_file():
+            try:
+                if os.path.exists("config.json"):
+                    with open("config.json", "r") as f:
+                        contents = json.load(f)
+                    return {"data": contents}
+                else:
+                    return {"message": "config.json file doesn't exist"}
+            except json.JSONDecodeError:
+                return {"message": "config.json exists but contains invalid JSON"}
+            except Exception as e:
+                return {"message": f"An error occurred: {str(e)}"}
+
+        @staticmethod
+        def get_output_file_by_id(output_file_id: str):
+            """Load the output file and return the URLs"""
+            filepath = OUTPUT_DIR / f"{output_file_id}.json"
+            with open(filepath, "r") as f:
+                data = json.load(f)
+                return {"data": data}
