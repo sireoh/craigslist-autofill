@@ -209,3 +209,4 @@ __marimo__/
 # Server Stuff
 /server/outputs
 /server/listings
+server/config.json
