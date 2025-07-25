@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import FastAPI
 
 from client_dal import update_config
-from models import PresetData, GatherRequest
+from models import PresetData, GatherRequest, ScrapeRequest
 from progress_hook import progress
 from scrape_dal import gather_listings, scrape_data
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,8 +30,8 @@ async def __gather_listings(req: Optional[GatherRequest] = None):
 
 
 @app.post("/scrape_data")
-async def __scrape_data():
-    return scrape_data()
+async def __scrape_data(req: Optional[ScrapeRequest] = None):
+    return scrape_data(req)
 
 
 @app.get("/progress")

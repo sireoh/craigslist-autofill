@@ -1,15 +1,13 @@
 import json
 from typing import Optional, cast
+
+from fastapi import Path
 from helpers import Helpers
-from models import GatherRequest
+from models import GatherRequest, ScrapeRequest
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 from constants import HEADERS, LISTINGS_CONFIG_PATH, LISTINGS_DIR
 import os
-
-
-def scrape_data():
-    pass
 
 
 def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
@@ -92,3 +90,52 @@ def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
         "message": f"Found {len(all_urls)} listings to scrape",
         "output_file": str(output_filename),
     }
+
+
+def scrape_data(req: Optional[ScrapeRequest] = None):
+    # If request is provided, use the specified listingsdoc_id
+    if req is not None and req.listingsdoc_id:
+        # Here you would implement the scraping with the provided ID
+        return {"message": f"Scraping with provided ID: {req.listingsdoc_id}"}
+
+    # If no request is provided, check for listings directory and config
+    listings_dir = Path("listings")
+
+    # Check if listings directory exists
+    if not listings_dir.exists() or not listings_dir.is_dir():
+        return {"message": "/listings directory doesn't exist."}
+
+    config_path = listings_dir / "listings_config.json"
+
+    # Check if config file exists
+    if not config_path.exists():
+        return {"message": "listings_config.json doesn't exist in /listings directory."}
+
+    # Read the config file
+    try:
+        with open(config_path, "r") as f:
+            config = json.load(f)
+            current_index = config.get("current_index")
+
+            if current_index is None:
+                return {"message": "current_index not found in listings_config.json"}
+
+            # Format the filename with leading zero for single-digit numbers
+            filename = f"listings_{current_index:02d}.json"
+            file_path = listings_dir / filename
+
+            if not file_path.exists():
+                return {
+                    "message": f"File {filename} doesn't exist in /listings directory"
+                }
+
+            # Here you would implement the scraping using the found file
+            return {
+                "message": f"Scraping with most recent listings file: {filename}",
+                "file_path": str(file_path),
+            }
+
+    except json.JSONDecodeError:
+        return {"message": "listings_config.json contains invalid JSON"}
+    except Exception as e:
+        return {"message": f"An error occurred: {str(e)}"}
