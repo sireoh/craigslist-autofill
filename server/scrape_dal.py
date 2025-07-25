@@ -1,21 +1,39 @@
 import json
-from typing import cast
+from typing import Optional, cast
 from helpers import Helpers
 from models import GatherRequest
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 from constants import HEADERS, LISTINGS_CONFIG_PATH, LISTINGS_DIR
+import os
 
 
 def scrape_data():
     pass
 
 
-def gather_listings(req: GatherRequest):
+def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
     """
     Gather data from individual listings based on the provided query.
     For now, just logs the URLs that would be scraped.
     """
+    # If request is empty, try to read from config.json
+    if req is None:
+        try:
+            # Check if config.json exists
+            if not os.path.exists("config.json"):
+                return {"message": "config.json file not found"}
+
+            # Read config file
+            with open("config.json", "r") as f:
+                config = json.load(f)
+
+            # Extract the query from config
+            query = config["settings"]["craigslist_query"]["query"]
+            req = GatherRequest(query=query)
+        except Exception as e:
+            return {"message": f"Error reading config.json: {str(e)}"}
+
     # Build the search URL
     url = f"https://vancouver.craigslist.org/search/hhh?query={req.query}#search=2~gallery~0"
 

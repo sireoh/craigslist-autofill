@@ -1,4 +1,5 @@
 from threading import Thread
+from typing import Optional
 from fastapi import FastAPI
 
 from client_dal import update_config
@@ -24,7 +25,7 @@ app.add_middleware(
 
 
 @app.post("/gather_listings")
-async def __gather_listings(req: GatherRequest):
+async def __gather_listings(req: Optional[GatherRequest] = None):
     return gather_listings(req)
 
 
