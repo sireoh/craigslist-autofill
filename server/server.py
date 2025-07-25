@@ -31,7 +31,18 @@ async def __gather_listings(req: Optional[GatherRequest] = None):
 
 @app.post("/scrape_data")
 async def __scrape_data(req: Optional[ScrapeRequest] = None):
-    return scrape_data(req)
+    """
+    Start the scraping process in a separate thread.
+    """
+
+    def scrape_task():
+        scrape_data(req)
+
+    # Run the scraping process in a separate thread
+    thread = Thread(target=scrape_task)
+    thread.start()
+
+    return {"message": "Scraping process started"}
 
 
 @app.get("/progress")

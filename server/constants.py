@@ -16,3 +16,5 @@ OUTPUT_CONFIG_PATH = OUTPUT_DIR / "outputs_config.json"
 
 LISTINGS_DIR = Path("listings")
 LISTINGS_CONFIG_PATH = LISTINGS_DIR / "listings_config.json"
+
+SAMPLE_SIZE = 13

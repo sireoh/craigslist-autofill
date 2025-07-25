@@ -1,12 +1,21 @@
 import json
-from typing import Optional, cast
+import random
+import time
+from typing import Dict, Optional, cast
 from helpers import Helpers
 from models import GatherRequest, ScrapeRequest
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
-from constants import HEADERS, LISTINGS_CONFIG_PATH, LISTINGS_DIR
+from constants import (
+    HEADERS,
+    LISTINGS_CONFIG_PATH,
+    LISTINGS_DIR,
+    OUTPUT_CONFIG_PATH,
+    SAMPLE_SIZE,
+)
 import os
 from pathlib import Path
+from store import progress_state
 
 
 def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
@@ -95,6 +104,7 @@ def scrape_data(req: Optional[ScrapeRequest] = None):
     # If request is provided, use the specified listingsdoc_id
     if req is not None and req.listingsdoc_id:
         # Here you would implement the scraping with the provided ID
+        run(req.listingsdoc_id)
         return {"message": f"Scraping with provided ID: {req.listingsdoc_id}"}
 
     # If no request is provided, check for listings directory and config
@@ -134,6 +144,7 @@ def scrape_data(req: Optional[ScrapeRequest] = None):
                 }
 
             # Here you would implement the scraping using the found file
+            run(f"listings_{zero_based_index:02d}")
             return {
                 "message": f"Scraping with most recent listings file: {filename}",
                 "file_path": str(file_path),
@@ -143,3 +154,86 @@ def scrape_data(req: Optional[ScrapeRequest] = None):
         return {"message": "listings_config.json contains invalid JSON"}
     except Exception as e:
         return {"message": f"An error occurred: {str(e)}"}
+
+
+def run(listingsdoc_id: str) -> Dict:
+    """Main function to run the scraping process"""
+    try:
+        Helpers.ensure_directories_exist()
+
+        # Update progress state for scraping phase
+        progress_state.update(
+            {"phase": "scraping", "current": 0, "total": SAMPLE_SIZE, "listings": []}
+        )
+
+        # Gather listings to scrape
+        all_urls = Helpers.load_listings_file(listingsdoc_id)
+
+        sample = Helpers.sample_listings(all_urls)
+
+        # Update progress state for details phase
+        progress_state.update(
+            {"phase": "details", "current": 0, "total": len(sample), "listings": []}
+        )
+
+        # Scrape each listing
+        results = []
+        for i, single_url in enumerate(sample):
+            try:
+                # Human-like delay BEFORE request (not after)
+                time.sleep(random.uniform(3, 6))
+
+                listing = Helpers.parse_details(single_url)
+
+                if listing:
+                    results.append(listing)
+                    # Update the listings in progress_state with the new listing
+                    progress_state["listings"].append(listing)
+
+                # Always update progress (even if listing=None)
+                progress_state.update(
+                    {
+                        "current": i + 1,
+                        "listings": progress_state[
+                            "listings"
+                        ],  # Ensure listings is included
+                    }
+                )
+
+            except Exception as e:
+                # Log failure but continue with next listing
+                print(f"Failed to scrape {single_url}: {str(e)}")
+                progress_state.update(
+                    {
+                        "current": i + 1,
+                        "error": str(e),
+                        "failed_url": single_url,
+                        "listings": progress_state[
+                            "listings"
+                        ],  # Maintain existing listings
+                    }
+                )
+
+        # Save the output
+        output_index = Helpers.increment_index(OUTPUT_CONFIG_PATH)
+        output_path = Helpers.save_output(results, output_index)
+
+        # Mark as done
+        progress_state.update(
+            {
+                "phase": "done",
+                "listings": progress_state[
+                    "listings"
+                ],  # Final update with all listings
+            }
+        )
+
+        return {
+            "status": "success",
+            "output_file": output_path.name,
+            "listings_scraped": len(results),
+        }
+
+    except Exception as e:
+        progress_state.update({"phase": "idle", "error": str(e)})
+        return {"status": "error", "message": str(e)}
