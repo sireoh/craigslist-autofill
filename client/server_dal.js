@@ -88,6 +88,31 @@ const ServerDAL = {
     }
   },
 
+  async loadOutputFile(presetData, outputFile) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const endpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}config/${encodeURIComponent(outputFile)}`;
+
+      const response = await fetch(endpoint, {
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(presetData)
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating config:", error);
+      return { status: "error", message: error.message };
+    }
+  },
+
   async gatherListings() {
     try {
       const serverHost = await MainDAL.getItemByName("serverHost") ?? "";

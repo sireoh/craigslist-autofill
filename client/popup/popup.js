@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // Set to the main_dal
+    // Set to the presets_dal
     PresetsDAL.savePreset(presetData);
 
     // Send to server
@@ -79,15 +79,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Handle auto filler form click
-  ELEMENTS.importDataButton.addEventListener('click', (e) => {
+  ELEMENTS.loadDataButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    // Open in new tab
-    window.open(
-      browser.runtime.getURL("popup/file_import.html"),
-      "_blank",
-      "width=350,height=150,noopener,noreferrer"
-    );
+    // Reveal the load container
+    const outputs = await ServerDAL.getOutputs();
+
+    if (outputs.message == "success") {
+      Helpers.updateLoadContainerElement(outputs);
+    } else {
+      console.log("[Error]: ", outputs.message)
+    }
   });
 
   // ==========================

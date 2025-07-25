@@ -3,6 +3,64 @@ const Helpers = {
     ELEMENTS.connectForm.hidden = isConnected;
   },
 
+  updateLoadContainerElement(outputFiles) {
+    const data = outputFiles.data;
+    const container = ELEMENTS.fetchContainer;
+
+    // Clear existing content
+    container.innerHTML = '';
+
+    // Create the <ul>
+    const ul = document.createElement('ul');
+    ul.style.listStyle = 'none';
+    ul.style.padding = '0';
+    ul.style.margin = '0';
+    ul.style.marginTop = '4px';
+
+    data.forEach(filename => {
+      // Create the <li>
+      const li = document.createElement('li');
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.justifyContent = 'space-between';
+      li.style.marginBottom = '6px';
+
+      // Left: filename
+      const fileLabel = document.createElement('small');
+      fileLabel.textContent = filename;
+      fileLabel.style.flex = '1';
+
+      // Right: buttons container
+      const buttonGroup = document.createElement('div');
+      buttonGroup.style.display = 'flex';
+      buttonGroup.style.gap = '6px';
+
+      // Load button
+      const loadButton = document.createElement('button');
+      loadButton.textContent = 'Load';
+      loadButton.type = 'button';
+      loadButton.addEventListener('click', async () => {
+        // Fetch initial state from MainDAL
+        const db = { selectedPreset: await MainDAL.getItemByName("selectedPreset") ?? "" };
+        const presetData = await PresetsDAL.getPresetById(db.selectedPreset);
+
+        const serverResponse = await ServerDAL.loadOutputFile(presetData, filename);
+        console.log('Server response:', serverResponse);
+
+        ELEMENTS.loadedOutputText.textContent = `Loaded: ${filename}`;
+      });
+
+      // Assemble buttons and row
+      buttonGroup.appendChild(loadButton);
+      li.appendChild(fileLabel);
+      li.appendChild(buttonGroup);
+      ul.appendChild(li);
+    });
+
+    // Append the list to the container
+    container.appendChild(ul);
+  },
+
   updateOutputsContainerElement(outputs) {
     const data = outputs.data;
     const container = ELEMENTS.fetchContainer;

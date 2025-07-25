@@ -49,3 +49,7 @@ class Settings(BaseModel):
 class PresetData(BaseModel):
     id: str
     settings: Settings
+    output_file: Optional[str] = None
+
+    class Config:
+        extra = "allow"

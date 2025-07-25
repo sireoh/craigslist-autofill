@@ -6,8 +6,9 @@ const ELEMENTS = {
   "serverStatus" : document.getElementById('is_server_connected'),
   "presetsForm" : document.getElementById('presets_form'),
   "editExportsForm" : document.getElementById('edit_export_container'),
-  "importDataButton" : document.getElementById('import_data_button'),
+  "loadDataButton" : document.getElementById('load_data_button'),
   "progressForm" : document.getElementById('progress_form'),
   "progressValue" : document.getElementById('progress_value'),
   "progressText" : document.getElementById('progress_text'),
+  "loadedOutputText" : document.getElementById('loaded_output_file'),
 }

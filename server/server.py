@@ -2,7 +2,7 @@ from threading import Thread
 from typing import Optional
 from fastapi import FastAPI
 
-from client_dal import update_config
+from client_dal import load_output_file, update_config
 from models import PresetData, GatherRequest, ScrapeRequest
 from progress_hook import progress
 from scrape_dal import gather_listings, scrape_data
@@ -104,6 +104,11 @@ async def __delete_listing_by_name(filename):
 @app.patch("/config")
 async def __update_config(req: PresetData):
     return update_config(req)
+
+
+@app.patch("/config/{output_file}")
+async def __load_output_file(req: PresetData, output_file: str):
+    return load_output_file(req, output_file)
 
 
 if __name__ == "__main__":
