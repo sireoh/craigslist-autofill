@@ -139,17 +139,7 @@ async def __load_output_file(req: PresetData, output_file: str):
 
 @app.get("/ai_model/prompt_ai")
 async def __prompt_ai():
-    return prompt_ai()
-
-
-@app.get("/ai_model/config")
-async def __get_config():
-    return Helpers.AI.get_config_file()
-
-
-@app.get("/ai_model/output/{output_file_id}")
-async def __get_output_file_by_id(output_file_id: str):
-    return Helpers.AI.get_output_file_by_id(output_file_id)
+    return Helpers.AI.get_prompt_data()
 
 
 if __name__ == "__main__":

@@ -3,12 +3,13 @@ import json
 from pathlib import Path
 import random
 import os
-from typing import Dict, List
+from typing import Any, Dict, List
 
 from bs4 import BeautifulSoup
 import requests
 
 from constants import HEADERS, LISTINGS_DIR, OUTPUT_DIR, SAMPLE_SIZE
+from models import PresetData
 
 
 class Helpers(abc.ABC):
@@ -101,7 +102,22 @@ class Helpers(abc.ABC):
 
     class AI(abc.ABC):
         @staticmethod
-        def get_config_file():
+        def get_prompt_txt_file() -> dict[str, str]:
+            """Load the prompt text file and return its contents."""
+            try:
+                if os.path.exists("prompt.txt"):
+                    with open("prompt.txt", "r") as file:
+                        content = file.read()
+                    return {"content": content}
+                else:
+                    return {"message": "File not found"}
+            except FileNotFoundError:
+                return {"message": "File not found"}
+            except IOError as e:
+                return {"message": f"An error occurred while reading the file: {e}"}
+
+        @staticmethod
+        def get_config_file() -> dict[str, Any]:
             try:
                 if os.path.exists("config.json"):
                     with open("config.json", "r") as f:
@@ -115,9 +131,37 @@ class Helpers(abc.ABC):
                 return {"message": f"An error occurred: {str(e)}"}
 
         @staticmethod
-        def get_output_file_by_id(output_file_id: str):
+        def get_output_file():
             """Load the output file and return the URLs"""
+            result: dict[str, Any] = Helpers.AI.get_config_file()
+            data = result.get("data")
+
+            # Ensure data is a PresetData instance
+            if isinstance(data, dict):
+                preset_data = PresetData(**data)
+            else:
+                return {"message": "Invalid data format"}
+
+            # Check if output_file is a string before splitting
+            if isinstance(preset_data.output_file, str):
+                output_file_id = preset_data.output_file.split(".")[0]
+            else:
+                output_file_id = preset_data.output_file
+
             filepath = OUTPUT_DIR / f"{output_file_id}.json"
-            with open(filepath, "r") as f:
-                data = json.load(f)
-                return {"data": data}
+            try:
+                with open(filepath, "r") as f:
+                    data = json.load(f)
+                    return {"data": data}
+            except FileNotFoundError:
+                return {"message": "Output file not found"}
+            except json.JSONDecodeError:
+                return {"message": "Error decoding JSON from output file"}
+
+        @staticmethod
+        def get_prompt_data():
+            return {
+                "config.json": Helpers.AI.get_config_file(),
+                "output.json": Helpers.AI.get_output_file(),
+                "prompt.txt": Helpers.AI.get_prompt_txt_file(),
+            }
