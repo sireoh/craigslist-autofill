@@ -1,13 +1,12 @@
 import json
 from typing import Optional, cast
-
-from fastapi import Path
 from helpers import Helpers
 from models import GatherRequest, ScrapeRequest
 from bs4 import BeautifulSoup, ResultSet, Tag
 import requests
 from constants import HEADERS, LISTINGS_CONFIG_PATH, LISTINGS_DIR
 import os
+from pathlib import Path
 
 
 def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
@@ -120,8 +119,13 @@ def scrape_data(req: Optional[ScrapeRequest] = None):
             if current_index is None:
                 return {"message": "current_index not found in listings_config.json"}
 
+            # Convert to 0-based index (subtract 1)
+            zero_based_index = current_index - 1
+            if zero_based_index < 0:  # Handle case where current_index was 0
+                return {"message": "No listings files available (current_index is 0)"}
+
             # Format the filename with leading zero for single-digit numbers
-            filename = f"listings_{current_index:02d}.json"
+            filename = f"listings_{zero_based_index:02d}.json"
             file_path = listings_dir / filename
 
             if not file_path.exists():
