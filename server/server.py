@@ -8,7 +8,14 @@ from progress_hook import progress
 from scrape_dal import gather_listings, scrape_data
 from fastapi.middleware.cors import CORSMiddleware
 
-from server_dal import delete_output_by_name, get_outputs, serve_output_file
+from server_dal import (
+    delete_listing_by_name,
+    delete_output_by_name,
+    get_listings,
+    get_outputs,
+    serve_listing_file,
+    serve_output_file,
+)
 
 app = FastAPI()
 port = 5694
@@ -59,14 +66,39 @@ async def __outputs():
     return get_outputs()
 
 
-@app.get("/outputs/{filename}")
-async def __serve_output_file(filename):
-    return serve_output_file(filename)
+@app.get("/outputs/{filename}/download")
+async def __serve_output_file_to_download(filename):
+    return serve_output_file(filename, True)
+
+
+@app.get("/outputs/{filename}/view")
+async def __serve_output_file_to_view(filename):
+    return serve_output_file(filename, False)
 
 
 @app.delete("/outputs/{filename}")
 async def __delete_output_by_name(filename):
     return delete_output_by_name(filename)
+
+
+@app.get("/listings")
+async def __listings():
+    return get_listings()
+
+
+@app.get("/listings/{filename}/download")
+async def __serve_listing_file_to_download(filename):
+    return serve_listing_file(filename, True)
+
+
+@app.get("/listings/{filename}/view")
+async def __serve_listing_file_to_view(filename):
+    return serve_listing_file(filename, False)
+
+
+@app.delete("/listings/{filename}")
+async def __delete_listing_by_name(filename):
+    return delete_listing_by_name(filename)
 
 
 @app.patch("/config")

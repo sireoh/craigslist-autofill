@@ -32,6 +32,37 @@ const ServerDAL = {
     }
   },
 
+  async getListings() {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const listingsEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}listings`;
+
+      const response = await fetch(listingsEndpoint);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching listings:", error);
+      return null; // optional fallback
+    }
+  },
+
+  async deleteListing(filename) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const deleteEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}listings/${filename}`;
+
+      const response = await fetch(deleteEndpoint, {
+        method: "DELETE"
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error deleting file "${filename}":`, error);
+      return { message: "fail" };
+    }
+  },
+
   async updateConfig(presetData) {
     try {
       const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
@@ -55,7 +86,24 @@ const ServerDAL = {
       console.error("Error updating config:", error);
       return { status: "error", message: error.message };
     }
-  }
+  },
+
+  async gatherListings() {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const gatherListingsEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}gather_listings/`;
+
+      const response = await fetch(gatherListingsEndpoint, {
+        method: "POST"
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error gathering listings:`, error);
+      return { message: "fail" };
+    }
+  },
 };
 
 // Expose globally for popup/background access

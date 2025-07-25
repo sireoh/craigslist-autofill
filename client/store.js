@@ -4,7 +4,8 @@ const state = {
   isConnected: false,
   serverHost: "",
   selectedPreset: "",
-  presetData: {}
+  presetData: {},
+  intervalId: ""
 };
 
 

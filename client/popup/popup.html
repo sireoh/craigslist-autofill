@@ -1,113 +1,115 @@
 <!-- popup.html -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Popup</title>
-    <link rel="stylesheet" href="popup.css">
-  </head>
-  <body>
-    <!-- Connect to Server -->
-    <div name="connect_to_server">
-      <label>connect to server</label>
-      <form id="connect_to_server_form" style="display:flex; width:100%;">
-        <input name="server_host" placeholder="https://localhost:5964/ ..." style="flex:1;"/>
-        <button type="submit">Connect</button>
-      </form>
 
-      <!-- Divider -->
-      <hr style="border-top: 1px solid #333"/>
-    </div>
+<head>
+  <meta charset="utf-8" />
+  <title>Popup</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
 
-    <!-- Main -->
-    <div name="main">
-      <div name="header" style="display:flex; justify-content: space-between;">
-        <small id="is_server_connected">🔴 Not connected to any servers</small>
-      </div>
-      <div name="main_container" style="display:grid">
-        <label>Create a listing:</label>
-        <form id="presets_form" style="display:flex; width:100%">
-          <select name="presets_select" style="flex:1;">
-            <option value="preset_00" name="preset_00">preset 0</option>
-            <option value="preset_01" name="preset_01">preset 1</option>
-            <option value="preset_02" name="preset_02">preset 2</option>
-            <option value="preset_03" name="preset_03">preset 3</option>
-            <option value="preset_04" name="preset_04">preset 4</option>
-            <option value="preset_05" name="preset_05">preset 5</option>
-            <option value="preset_06" name="preset_06">preset 6</option>
-            <option value="preset_07" name="preset_07">preset 7</option>
-          </select>
-        </form>
-      </div>
-    </div>
+<body>
+  <!-- Connect to Server -->
+  <div name="connect_to_server">
+    <label>connect to server</label>
+    <form id="connect_to_server_form" style="display:flex; width:100%;">
+      <input name="server_host" placeholder="https://localhost:5964/ ..." style="flex:1;" />
+      <button type="submit">Connect</button>
+    </form>
 
     <!-- Divider -->
-    <hr style="border-top: 1px solid #333"/>
+    <hr style="border-top: 1px solid #333" />
+  </div>
 
-    <!-- Edit Export -->
-    <div name="edit_export">
-      <form id="edit_export_container" style="display:grid; justify-items: center;">
-        <!-- Header -->
-         <div name="edit_export_header">
-            <label>header</label>
-            <div style="display:flex">
-              <input placeholder="city" name="city"/>
-              <input placeholder="zip_code" name="zip_code"/>
-            </div>
-         </div>
-
-        <!-- Details -->
-         <div name="edit_export_details">
-            <label>details</label>
-            <div style="display:flex">
-              <input placeholder="bedrooms" type="number" name="bedrooms"/>
-              <input placeholder="bathrooms" type="number" name="bathrooms"/>
-            </div>
-         </div>
-
-         <!-- Contact -->
-         <div name="edit_export_contact">
-            <label>contact</label>
-            <div style="display:flex">
-              <input placeholder="phone_num" name="phone_num"/>
-              <input placeholder="contact_name" name="contact_name"/>
-            </div>
-         </div>
-
-        <!-- Craigslist Query -->
-         <div name="edit_export_craigslist_query" style="text-align: center;">
-            <label>craigslist query</label>
-            <div style="display:flex">
-              <input placeholder="input query ..." value="2 bedroom basement" name="craigslist_query"/>
-            </div>
-         </div>
-
-         <!-- Footer Buttons -->
-         <div name="edit_export_footer_buttons">
-            <div style="display:flex">
-              <button type="submit">Save</button>
-              <button>Export</button>
-            </div>
-         </div>
+  <!-- Main -->
+  <div name="main">
+    <div name="header" style="display:flex; justify-content: space-between;">
+      <small id="is_server_connected">🔴 Not connected to any servers</small>
+    </div>
+    <div name="main_container" style="display:grid">
+      <label>Create a listing:</label>
+      <form id="presets_form" style="display:flex; width:100%">
+        <select name="presets_select" style="flex:1;">
+          <option value="preset_00" name="preset_00">preset 0</option>
+          <option value="preset_01" name="preset_01">preset 1</option>
+          <option value="preset_02" name="preset_02">preset 2</option>
+          <option value="preset_03" name="preset_03">preset 3</option>
+          <option value="preset_04" name="preset_04">preset 4</option>
+          <option value="preset_05" name="preset_05">preset 5</option>
+          <option value="preset_06" name="preset_06">preset 6</option>
+          <option value="preset_07" name="preset_07">preset 7</option>
+        </select>
       </form>
     </div>
+  </div>
 
-    <!-- Divider -->
-    <hr style="border-top: 1px solid #333"/>
+  <!-- Divider -->
+  <hr style="border-top: 1px solid #333" />
 
-    <!-- Progress Bar -->
-    <form id="progress_form" style="display:grid; width: 100%;">
-      <span id="progress_text">phase: idle</span>
-      <input type="range" min="0" max="100" value="0" style="display:flex; flex:1;" name="progress_bar">
-      <small style="text-align: end;" id="progress_value">0%</small>
-      <div style="display:flex;">
-        <button name="gather_button" style="flex:2">Gather Listings</button>
+  <!-- Edit Export -->
+  <div name="edit_export">
+    <form id="edit_export_container" style="display:grid; justify-items: center;">
+      <!-- Header -->
+      <div name="edit_export_header">
+        <label>header</label>
+        <div style="display:flex">
+          <input placeholder="city" name="city" />
+          <input placeholder="zip_code" name="zip_code" />
+        </div>
       </div>
-      <div style="display:flex;">
-        <button name="scrape_button" style="flex:2">Scrape Data</button>
-        <button name="fetch_outputs_button" style="flex:1">Fetch Outputs</button>
+
+      <!-- Details -->
+      <div name="edit_export_details">
+        <label>details</label>
+        <div style="display:flex">
+          <input placeholder="bedrooms" type="number" name="bedrooms" />
+          <input placeholder="bathrooms" type="number" name="bathrooms" />
+        </div>
       </div>
-      <div id="download_container"></div>
+
+      <!-- Contact -->
+      <div name="edit_export_contact">
+        <label>contact</label>
+        <div style="display:flex">
+          <input placeholder="phone_num" name="phone_num" />
+          <input placeholder="contact_name" name="contact_name" />
+        </div>
+      </div>
+
+      <!-- Craigslist Query -->
+      <div name="edit_export_craigslist_query" style="text-align: center;">
+        <label>craigslist query</label>
+        <div style="display:flex">
+          <input placeholder="input query ..." value="2 bedroom basement" name="craigslist_query" />
+        </div>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div name="edit_export_footer_buttons">
+        <div style="display:flex">
+          <button type="submit">Save</button>
+          <button>Export</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Divider -->
+  <hr style="border-top: 1px solid #333" />
+
+  <!-- Progress Bar -->
+  <form id="progress_form" style="display:grid; width: 100%;">
+    <span id="progress_text">phase: idle</span>
+    <input type="range" min="0" max="100" value="0" style="display:flex; flex:1;" name="progress_bar">
+    <small style="text-align: end;" id="progress_value">0%</small>
+    <div style="display:flex;">
+      <button name="gather_button" style="flex:2">Gather Listings</button>
+    </div>
+    <div style="display:flex;">
+      <button name="fetch_listings_button" style="flex:1">Fetch Listings</button>
+      <button name="fetch_outputs_button" style="flex:1">Fetch Outputs</button>
+    </div>
+    <div id="fetch_container" style="max-height: 75px; overflow-y: auto;"></div>
     </div>
 
     <!-- Auto-Filler -->
@@ -118,7 +120,7 @@
       </div>
       <button style="font-size: larger; margin-top: 8px;">Fill form</button>
     </div>
-  
+
     <!-- Scripts -->
     <script src="../hooks.js" defer></script>
     <script src="../constants.js" defer></script>
@@ -128,5 +130,6 @@
     <script src="../helper.js" defer></script>
     <script src="../server_dal.js" defer></script>
     <script src="popup.js" defer></script>
-  </body>
+</body>
+
 </html>

@@ -28,6 +28,13 @@ class Helpers(abc.ABC):
         return index
 
     @staticmethod
+    def decrement_index(config_path: Path) -> int:
+        index = Helpers.get_current_index(config_path) - 1
+        with open(config_path, "w") as f:
+            json.dump({"current_index": index}, f, indent=2)
+        return index
+
+    @staticmethod
     def load_listings_file(listingsdoc_id: str) -> List[str]:
         """Load the listings file and return the URLs"""
         filepath = LISTINGS_DIR / f"{listingsdoc_id}.json"

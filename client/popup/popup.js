@@ -132,35 +132,41 @@ function __init() {
     __fill_in_form_with_data(presetData);
   });
 
-  // Setup Progress Handler
-  // Start polling when the "Scrape Data" button is clicked
   const gatherButton = ELEMENTS.progressForm.elements["gather_button"];
-  gatherButton.addEventListener('click', (e) => {
+  gatherButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    // Reset UI immediately
-    const form = ELEMENTS.progressForm.elements;
-    form["progress_bar"].value = 0;
-    ELEMENTS.progressValue.textContent = `0%`;
-    ELEMENTS.progressText.textContent = `phase: starting`;
+    try {
+      const response = await ServerDAL.gatherListings();
 
-    const intervalId = setInterval(() => Hooks.pollProgress(intervalId), 1250);
-    Hooks.pollProgress(intervalId);
+      // Check for success in the response body (FastAPI style)
+      if (response.status !== "success") {
+        throw new Error(response.message || "Server returned an error");
+      }
+
+      // If successful, fetch and update listings
+      const listings = await ServerDAL.getListings();
+      Helpers.updateListingsContainerElement(listings);
+
+      // Show success message
+      alert(response.message || "Listings gathered successfully!");
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Failed to gather listings: ${error.message}`);
+    }
   });
 
-  // Start polling when the "Scrape Data" button is clicked
-  const scrapeButton = ELEMENTS.progressForm.elements["scrape_button"];
-  scrapeButton.addEventListener('click', (e) => {
+  const fetchListingsButton = ELEMENTS.progressForm.elements["fetch_listings_button"];
+  fetchListingsButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    // Reset UI immediately
-    const form = ELEMENTS.progressForm.elements;
-    form["progress_bar"].value = 0;
-    ELEMENTS.progressValue.textContent = `0%`;
-    ELEMENTS.progressText.textContent = `phase: starting`;
+    const listings = await ServerDAL.getListings();
 
-    const intervalId = setInterval(() => Hooks.pollProgress(intervalId), 1250);
-    Hooks.pollProgress(intervalId);
+    if (listings.message == "success") {
+      Helpers.updateListingsContainerElement(listings);
+    } else {
+      console.log("[Error]: ", listings.message)
+    }
   });
 
   const fetchOutputsButton = ELEMENTS.progressForm.elements["fetch_outputs_button"];
@@ -170,7 +176,7 @@ function __init() {
     const outputs = await ServerDAL.getOutputs();
 
     if (outputs.message == "success") {
-      Helpers.updateDownloadContainerElement(outputs);
+      Helpers.updateOutputsContainerElement(outputs);
     } else {
       console.log("[Error]: ", outputs.message)
     }
