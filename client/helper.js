@@ -128,12 +128,13 @@ const Helpers = {
         const confirmed = confirm(`Are you sure you want to scrape "${filename}"?`);
         if (!confirmed) return;
 
-        const res = await ServerDAL.scrapeListing(filename);
-        if (res.message === "success") {
-          console.log(`Scraped data from ${filename}`);
-        } else {
-          alert(`Failed to scrape ${filename}`);
-        }
+        const res = await ServerDAL.scrapeData(filename.split(".")[0]);
+        alert(res.message);
+
+        // Start the progress webhook with interval
+        const intervalId = setInterval(() => {
+            ServerDAL.startProgressWebhook(intervalId);
+        }, 500); // Poll every 0.5 second
       });
 
       // View button

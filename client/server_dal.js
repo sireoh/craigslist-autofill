@@ -104,6 +104,56 @@ const ServerDAL = {
       return { message: "fail" };
     }
   },
+
+  async scrapeData(listingsdoc_id) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const scrapeDataEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}scrape_data/`;
+
+      const response = await fetch(scrapeDataEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ listingsdoc_id })
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error scraping data:`, error);
+      return { message: "fail" };
+    }
+  },
+
+  async startProgressWebhook(intervalId) {
+    const state = Store.getState();
+      const progressEndpoint = `${state.serverHost.endsWith("/") ? state.serverHost : state.serverHost + "/"}progress`
+
+      fetch(progressEndpoint)
+      .then((response) => response.json())
+      .then((data) => {
+        ServerDAL.updateProgressGUI(data, intervalId);
+      })
+      .catch((error) => {
+          console.error("Failed to fetch progress:", error);
+      });
+  },
+
+  updateProgressGUI(data, intervalId) {
+    const form = ELEMENTS.progressForm.elements;
+    const progressBar = form["progress_bar"];
+    const percent = data.percent ?? 0;
+
+    progressBar.value = percent;
+    ELEMENTS.progressValue.textContent = `${percent}%`;
+    ELEMENTS.progressText.textContent = `phase: ${data.phase}`;
+
+    // Stop polling if done
+    if (data.phase == "done") {
+        clearInterval(intervalId);
+    }
+  }
 };
 
 // Expose globally for popup/background access
