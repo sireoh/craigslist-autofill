@@ -210,8 +210,7 @@ const Helpers = {
           const data = await response.json();
           
           // Do something with the returned data
-          console.log(JSON.stringify(data));
-          return data;
+          Helpers.DOM.PostingForm.fillForm(data);
           
         } catch (error) {
           console.error('Error loading file:', error);
@@ -434,6 +433,21 @@ const Helpers = {
   "Time" : {
     async sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
+    }
+  },
+
+  "DOM" : {
+    "PostingForm" : {
+      fillForm(data) {
+        // Get the active tab
+        browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
+          // Send message to content script
+          browser.tabs.sendMessage(tabs[0].id, {
+            action: "[POST] /fill_form",
+            data: data
+          });
+        });
+      }
     }
   }
 };

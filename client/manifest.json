@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Craigslist Autofill",
-  "version": "1.0",
+  "version": "1.3",
 
   "description": "Autofills Craigslists listings using AI",
 
@@ -12,8 +12,8 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.mozilla.org/*"],
-      "js": ["craigslist_autofill.js"]
+      "matches": ["*://*.craigslist.org/*"],
+      "js": ["DOM/posting_form.js", "DOM/content.js"]
     }
   ],
 
