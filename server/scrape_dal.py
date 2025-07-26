@@ -232,7 +232,7 @@ def run(listingsdoc_id: str) -> Dict:
 
         # Mark as done
         progress_manager.set_state(
-            phase="done",
+            phase="general/done",
             current=len(sample),
             total=len(sample),
             percent=100,

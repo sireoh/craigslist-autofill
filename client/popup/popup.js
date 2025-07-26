@@ -217,16 +217,23 @@ function __init() {
     const confirmed = confirm("Are you sure you want to generate form data with AI?");
     if (confirmed) {
       try {
+        // UPDATE GUI to tell client its starting.
+        Helpers.GUI.updateProgressGUIManually(0, "[STARTING] Preparing AI prompt...");
+
         const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
         const outputsEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}ai_model/prompt_ai`;
 
         const response = await fetch(outputsEndpoint);
         const data = await response.json();
-        if (data.status == "success") {
-          alert(data);
-        } else {
-          alert(`[Error]: ${data.mesage}`);
-        }
+        if (data.status == "error") { alert(`[Error]: ${data.mesage}`); }
+
+        // Update GUI Manually
+        Helpers.GUI.updateProgressGUIManually(20, "[PROCESSING] Building structured prompt...");
+
+        // Start the progress webhook with interval
+        const intervalId = setInterval(() => {
+            ServerDAL.startProgressWebhook(intervalId);
+        }, 3000); // Poll every 3 seconds
       } catch (error) {
         console.error("Error fetching outputs:", error);
         return null; // optional fallback

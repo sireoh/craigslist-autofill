@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 from helpers import Helpers
 from constants import AI_RESULTS_DIR, AI_RESULTS_CONFIG_PATH
 from models import AIConfig
+from progress_state_manager import progress_manager
 
 
 def prompt_ai(client):
@@ -19,6 +20,15 @@ def prompt_ai(client):
     output_XXXX.json: {prompt_data.get("output.json", {}).get("data", [])}
     """
 
+    # Update progress before API call
+    progress_manager.set_state(
+        phase="ai/processing",
+        current=40,
+        total=100,
+        percent=40,
+        message="[PROCESSING] Sending request to AI API...",
+    )
+
     completion = client.chat.completions.create(
         model="deepseek-ai/DeepSeek-V3-0324:novita",
         messages=[{"role": "user", "content": structured_prompt}],
@@ -29,6 +39,13 @@ def prompt_ai(client):
 
     # Check if content exists and is not None
     if not message.content:
+        progress_manager.set_state(
+            phase="ai/error",
+            current=0,
+            total=100,
+            percent=0,
+            message="[ERROR] No content in API response",
+        )
         return {"status": "error", "message": "No content in API response"}
 
     # Get the completion content
@@ -41,6 +58,13 @@ def prompt_ai(client):
             # Try without the 'json' specifier
             json_start = completion_content.find("```\n")
             if json_start == -1:
+                progress_manager.set_state(
+                    phase="ai/error",
+                    current=0,
+                    total=100,
+                    percent=0,
+                    message="[ERROR] No JSON code block found in response",
+                )
                 return {
                     "status": "error",
                     "message": "No JSON code block found in response",
@@ -51,6 +75,13 @@ def prompt_ai(client):
 
         json_end = completion_content.find("\n```", json_start)
         if json_end == -1:
+            progress_manager.set_state(
+                phase="ai/error",
+                current=0,
+                total=100,
+                percent=0,
+                message="[ERROR] No closing code block found in response",
+            )
             return {
                 "status": "error",
                 "message": "No closing code block found in response",
@@ -69,11 +100,34 @@ def prompt_ai(client):
         with open(output_path, "w") as f:
             json.dump(json_data, f, indent=2)
 
+        # Mark as done
+        progress_manager.set_state(
+            phase="general/done",
+            current=100,
+            total=100,
+            percent=100,
+            message="[DONE] AI processing completed successfully!",
+        )
+
         return {"status": "success", "file_path": str(output_path)}
 
     except json.JSONDecodeError as e:
+        progress_manager.set_state(
+            phase="ai/error",
+            current=0,
+            total=100,
+            percent=0,
+            message=f"[ERROR] Invalid JSON: {str(e)}",
+        )
         return {"status": "error", "message": f"Invalid JSON: {str(e)}"}
     except Exception as e:
+        progress_manager.set_state(
+            phase="ai/error",
+            current=0,
+            total=100,
+            percent=0,
+            message=f"[ERROR] Unexpected error: {str(e)}",
+        )
         return {"status": "error", "message": f"Unexpected error: {str(e)}"}
 
 

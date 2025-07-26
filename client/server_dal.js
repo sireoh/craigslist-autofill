@@ -189,26 +189,11 @@ const ServerDAL = {
       fetch(progressEndpoint)
       .then((response) => response.json())
       .then((data) => {
-        ServerDAL.updateProgressGUI(data, intervalId);
+        Helpers.GUI.updateProgressGUI(data, intervalId);
       })
       .catch((error) => {
           console.error("Failed to fetch progress:", error);
       });
-  },
-
-  updateProgressGUI(data, intervalId) {
-    const form = ELEMENTS.progressForm.elements;
-    const progressBar = form["progress_bar"];
-    const percent = data.percent ?? 0;
-
-    progressBar.value = percent;
-    ELEMENTS.progressValue.textContent = `${percent}%`;
-    ELEMENTS.progressText.textContent = data.message;
-
-    // Stop polling if done
-    if (data.phase == "general/done") {
-        clearInterval(intervalId);
-    }
   },
 
   async setHFAPIKey(hf_api_key) {

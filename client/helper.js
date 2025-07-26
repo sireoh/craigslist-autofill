@@ -319,7 +319,7 @@ const Helpers = {
         // Start the progress webhook with interval
         const intervalId = setInterval(() => {
             ServerDAL.startProgressWebhook(intervalId);
-        }, 500); // Poll every 0.5 second
+        }, 1000); // Poll every 1 second
       });
 
       // View button
@@ -402,6 +402,38 @@ const Helpers = {
         console.error('Error:', error);
         alert(`Failed to gather listings: ${error.message}`);
       }
+    }
+  },
+
+  "GUI" : {
+    updateProgressGUI(data, intervalId) {
+      const form = ELEMENTS.progressForm.elements;
+      const progressBar = form["progress_bar"];
+      const percent = data.percent ?? 0;
+
+      progressBar.value = percent;
+      ELEMENTS.progressValue.textContent = `${percent}%`;
+      ELEMENTS.progressText.textContent = data.message;
+
+      // Stop polling if done
+      if (data.phase == "general/done") {
+          clearInterval(intervalId);
+      }
+    },
+
+    updateProgressGUIManually(progressBarValue, progressText) {
+      const form = ELEMENTS.progressForm.elements;
+      const progressBar = form["progress_bar"];
+
+      progressBar.value = progressBarValue;
+      ELEMENTS.progressValue.textContent = `${progressBarValue}%`;
+      ELEMENTS.progressText.textContent = progressText;
+    },
+  },
+
+  "Time" : {
+    async sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
     }
   }
 };
