@@ -2,10 +2,9 @@ from threading import Thread
 from typing import Optional
 from fastapi import FastAPI
 
-from ai_model_dal import prompt_ai
+from ai_model_dal import get_ai_config, prompt_ai, update_ai_config
 from client_dal import load_output_file, update_config
-from helpers import Helpers
-from models import PresetData, GatherRequest, ScrapeRequest
+from models import AIConfig, PresetData, GatherRequest, ScrapeRequest
 from progress_hook import progress
 from scrape_dal import gather_listings, scrape_data
 from fastapi.middleware.cors import CORSMiddleware
@@ -137,9 +136,19 @@ async def __load_output_file(req: PresetData, output_file: str):
 ####################################################################
 
 
+@app.patch("/ai_model/config")
+async def __update_ai_config(req: AIConfig):
+    return update_ai_config(req)
+
+
+@app.get("/ai_model/config")
+async def __get_ai_config():
+    return get_ai_config()
+
+
 @app.get("/ai_model/prompt_ai")
 async def __prompt_ai():
-    return Helpers.AI.get_prompt_data()
+    return prompt_ai()
 
 
 if __name__ == "__main__":

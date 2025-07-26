@@ -18,6 +18,10 @@ curl -X POST http://localhost:5694/start_scrape \
 curl -X POST http://localhost:5694/start_scrape \
   -H "Content-Type: application/json" \
   -d '{"query": "2 bedroom basement"}'
+
+curl -X PATCH http://localhost:5694/ai_model/config \
+  -H 'Content-Type: application/json' \
+  -d '{ "hf_api_key": "your_huggingface_api_key_here" }'
 ```
 
 # to add

@@ -165,3 +165,17 @@ class Helpers(abc.ABC):
                 "output.json": Helpers.AI.get_output_file(),
                 "prompt.txt": Helpers.AI.get_prompt_txt_file(),
             }
+
+        @staticmethod
+        def get_ai_config_file() -> dict[str, Any]:
+            try:
+                if os.path.exists("ai_config.json"):
+                    with open("ai_config.json", "r") as f:
+                        contents = json.load(f)
+                    return {"data": contents}
+                else:
+                    return {"message": "ai_config.json file doesn't exist"}
+            except json.JSONDecodeError:
+                return {"message": "ai_config.json exists but contains invalid JSON"}
+            except Exception as e:
+                return {"message": f"An error occurred: {str(e)}"}
