@@ -1,4 +1,3 @@
-import json
 import os
 
 from fastapi import HTTPException
