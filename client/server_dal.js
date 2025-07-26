@@ -63,6 +63,37 @@ const ServerDAL = {
     }
   },
 
+  async getAiResults() {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const aiResultsEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}ai_model/results`;
+
+      const response = await fetch(aiResultsEndpoint);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching ai results:", error);
+      return null; // optional fallback
+    }
+  },
+
+  async deleteAiResult(filename) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const deleteEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}ai_model/results/${filename}`;
+
+      const response = await fetch(deleteEndpoint, {
+        method: "DELETE"
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(`Error deleting file "${filename}":`, error);
+      return { message: "fail" };
+    }
+  },
+
   async updateConfig(presetData) {
     try {
       const serverHost = await MainDAL.getItemByName("serverHost") ?? "";

@@ -11,10 +11,14 @@ from scrape_dal import gather_listings, scrape_data
 from fastapi.middleware.cors import CORSMiddleware
 
 from server_dal import (
+    delete_ai_result_by_name,
     delete_listing_by_name,
     delete_output_by_name,
+    get_ai_results,
     get_listings,
     get_outputs,
+    load_result_file,
+    serve_ai_result_file,
     serve_listing_file,
     serve_output_file,
 )
@@ -135,6 +139,31 @@ async def __load_output_file(req: PresetData, output_file: str):
 ####################################################################
 # ======================= AI ENDPOINTS =========================== #
 ####################################################################
+
+
+@app.get("/ai_model/results")
+async def __get_ai_results():
+    return get_ai_results()
+
+
+@app.get("/ai_model/results/{filename}/download")
+async def __serve_ai_result_file_to_download(filename):
+    return serve_ai_result_file(filename, True)
+
+
+@app.get("/ai_model/results/{filename}/view")
+async def __serve_ai_result_file_to_view(filename):
+    return serve_ai_result_file(filename, False)
+
+
+@app.get("/ai_model/results/{filename}/load")
+async def __load_result_file(filename):
+    return load_result_file(filename)
+
+
+@app.delete("/ai_model/results/{filename}")
+async def __delete_ai_result_by_name(filename):
+    return delete_ai_result_by_name(filename)
 
 
 @app.patch("/ai_model/config")

@@ -217,6 +217,19 @@ function __init() {
     }
   });
 
+  const fillFormButton = ELEMENTS.fillFormButton;
+  fillFormButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const aiResults = await ServerDAL.getAiResults();
+
+    if (aiResults.message == "success") {
+      Helpers.updateAiResultsContainerElement(aiResults);
+    } else {
+      console.log("[Error]: ", aiResults.message)
+    }
+  });
+
   // Fill form on first load
   const presetData = state.presets.find(p => p.id === state.selectedPreset);
   __fill_in_form_with_data(presetData);

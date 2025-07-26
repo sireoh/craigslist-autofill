@@ -1,9 +1,10 @@
+import json
 import os
 
 from fastapi import HTTPException
 from fastapi.responses import FileResponse
 
-from constants import LISTINGS_CONFIG_PATH, OUTPUT_CONFIG_PATH
+from constants import AI_RESULTS_CONFIG_PATH, LISTINGS_CONFIG_PATH, OUTPUT_CONFIG_PATH
 from helpers import Helpers
 
 ####################################################################
@@ -116,3 +117,78 @@ def serve_listing_file(filename: str, as_download: bool):
         filename=filename if as_download else None,
         media_type="application/octet-stream" if as_download else "application/json",
     )
+
+
+####################################################################
+# =================== AI RESULTS FOLDER ========================== #
+####################################################################
+
+
+def get_ai_results():
+    folder_path = os.path.join(os.path.dirname(__file__), "ai_results")
+    try:
+        filenames = os.listdir(folder_path)
+        return {
+            "message": "success",
+            "data": [
+                f
+                for f in filenames
+                if os.path.isfile(os.path.join(folder_path, f))
+                and f != "ai_results_config.json"
+            ],
+        }
+    except FileNotFoundError:
+        print(f"The folder {folder_path} does not exist.")
+        return {"message": "fail"}
+
+
+def delete_ai_result_by_name(filename: str):
+    folder_path = os.path.join(os.path.dirname(__file__), "ai_results")
+    file_path = os.path.join(folder_path, filename)
+
+    if os.path.exists(file_path) and os.path.isfile(file_path):
+        try:
+            # Delete the file from the system
+            os.remove(file_path)
+
+            # Decrement the index
+            Helpers.decrement_index(AI_RESULTS_CONFIG_PATH)
+            return {"message": "success"}
+        except Exception as e:
+            print(f"Error deleting file: {e}")
+            return {"message": "fail", "error": str(e)}
+    else:
+        return {"message": "fail", "error": "file not found"}
+
+
+def serve_ai_result_file(filename: str, as_download: bool):
+    folder_path = os.path.join(os.path.dirname(__file__), "ai_results")
+    file_path = os.path.join(folder_path, filename)
+
+    if not os.path.exists(file_path) or not os.path.isfile(file_path):
+        raise HTTPException(status_code=404, detail="File not found")
+
+    return FileResponse(
+        path=file_path,
+        filename=filename if as_download else None,
+        media_type="application/octet-stream" if as_download else "application/json",
+    )
+
+
+def load_result_file(filename: str):
+    try:
+        folder_path = os.path.join(os.path.dirname(__file__), "ai_results")
+        file_path = os.path.join(folder_path, filename)
+
+        if not os.path.exists(file_path) or not os.path.isfile(file_path):
+            raise HTTPException(status_code=404, detail="File not found")
+
+        with open(file_path, "r") as file:
+            data = json.load(file)
+
+        return data
+
+    except json.JSONDecodeError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid JSON format: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

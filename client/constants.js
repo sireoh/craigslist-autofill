@@ -13,4 +13,5 @@ const ELEMENTS = {
   "progressText" : document.getElementById('progress_text'),
   "loadedOutputText" : document.getElementById('loaded_output_file'),
   "setHFAPIKeyForm" : document.getElementById('set_hugging_face_api_key_form'),
+  "fillFormButton" : document.getElementById('fill_form_button'),
 }
