@@ -128,8 +128,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       : '🔴 Not connected to any servers';
 
     // Update api addition status
+    const _a = Store.getState().HFAPIKey
     ELEMENTS.keyAddedStatus.textContent = newState.HFAPIKey
-      ? `🟢 API Key set to: ${Store.getState().HFAPIKey}`
+      ? `🟢 API Key set to: ${Helpers.truncateAPIKey(_a)}`
       : '🔴 API Key not set yet';
   });
 });
@@ -144,8 +145,9 @@ function __init() {
     : '🔴 Not connected to any servers';
   
   // Update api addition status
+  const _a = Store.getState().HFAPIKey
   ELEMENTS.keyAddedStatus.textContent = state.HFAPIKey
-    ? `🟢 API Key set to: ${state.HFAPIKey}`
+    ? `🟢 API Key set to: ${Helpers.truncateAPIKey(_a)}`
     : '🔴 API Key not set yet';
 
   // Set dropdown value
@@ -174,24 +176,11 @@ function __init() {
   gatherButton.addEventListener('click', async (e) => {
     e.preventDefault();
 
-    try {
-      const response = await ServerDAL.gatherListings();
-
-      // Check for success in the response body (FastAPI style)
-      if (response.status !== "success") {
-        throw new Error(response.message || "Server returned an error");
-      }
-
-      // If successful, fetch and update listings
-      const listings = await ServerDAL.getListings();
-      Helpers.updateListingsContainerElement(listings);
-
-      // Show success message
-      const alertText = `${response.message}\nView ${response.output_file} by clicking "Fetch Listings".`;
-      alert(alertText);
-    } catch (error) {
-      console.error('Error:', error);
-      alert(`Failed to gather listings: ${error.message}`);
+    const confirmed = confirm("Are you sure you want to webscrape Craigslist for listings?");
+    if (confirmed) {
+      await Helpers.Webscrapers.gatherListings();
+    } else {
+      return null;
     }
   });
 
@@ -218,6 +207,32 @@ function __init() {
       Helpers.updateOutputsContainerElement(outputs);
     } else {
       console.log("[Error]: ", outputs.message)
+    }
+  });
+
+  const promptAiButton = ELEMENTS.promptAiButton;
+  promptAiButton.addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    const confirmed = confirm("Are you sure you want to generate form data with AI?");
+    if (confirmed) {
+      try {
+        const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+        const outputsEndpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}ai_model/prompt_ai`;
+
+        const response = await fetch(outputsEndpoint);
+        const data = await response.json();
+        if (data.status == "success") {
+          alert(data);
+        } else {
+          alert(`[Error]: ${data.mesage}`);
+        }
+      } catch (error) {
+        console.error("Error fetching outputs:", error);
+        return null; // optional fallback
+      }
+    } else {
+      return null;
     }
   });
 

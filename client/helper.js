@@ -374,5 +374,34 @@ const Helpers = {
 
     // Append the list to the container
     container.appendChild(ul);
+  },
+
+  truncateAPIKey(original) {
+    const truncated = `${original.substring(0, Math.ceil(original.length * CONSTANTS.apiKeyMaxLen))}⁎⁎⁎⁎⁎⁎⁎⁎`;
+    return truncated;
+  },
+
+  "Webscrapers" : {
+    async gatherListings() {
+      try {
+        const response = await ServerDAL.gatherListings();
+
+        // Check for success in the response body (FastAPI style)
+        if (response.status !== "success") {
+          throw new Error(response.message || "Server returned an error");
+        }
+
+        // If successful, fetch and update listings
+        const listings = await ServerDAL.getListings();
+        Helpers.updateListingsContainerElement(listings);
+
+        // Show success message
+        const alertText = `${response.message}\nView ${response.output_file} by clicking "Fetch Listings".`;
+        alert(alertText);
+      } catch (error) {
+        console.error('Error:', error);
+        alert(`Failed to gather listings: ${error.message}`);
+      }
+    }
   }
 };
