@@ -313,8 +313,8 @@ const Helpers = {
         const confirmed = confirm(`Are you sure you want to scrape "${filename}"?`);
         if (!confirmed) return;
 
-        const res = await ServerDAL.scrapeData(filename.split(".")[0]);
-        alert(res.message);
+        const serverResponse = await ServerDAL.scrapeData(filename.split(".")[0]);
+        console.log(serverResponse);
 
         // Start the progress webhook with interval
         const intervalId = setInterval(() => {

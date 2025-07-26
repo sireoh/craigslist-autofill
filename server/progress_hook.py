@@ -1,20 +1,17 @@
-from store import progress_state
+# progress_hook.py
+from models import ProgressState
+from progress_state_manager import progress_manager
 
 
-def progress():
-    phase = progress_state["phase"]
+def progress() -> ProgressState:
+    # Get the current state from the ProgressStateManager
+    current_state = progress_manager.get_state()
 
-    if phase == "scraping":
-        return {"phase": "scraping all the listings"}
+    # Calculate the percent to avoid division by zero
+    total = current_state.total or 1  # Avoid div-by-zero
+    percent = int(current_state.current / total * 100)
 
-    if phase == "details":
-        total = progress_state["total"] or 1  # avoid div-by-zero
-        percent = int(progress_state["current"] / total * 100)
-        return {
-            "phase": "getting listing details",
-            "percent": percent,
-            "listings": progress_state["listings"],
-        }
+    # Update the percent in the state
+    current_state.percent = percent
 
-    # Anything else ('idle' or 'done')
-    return {"phase": phase}
+    return current_state

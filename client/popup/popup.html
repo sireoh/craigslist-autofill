@@ -95,7 +95,7 @@
 
   <!-- Progress Bar -->
   <form id="progress_form" style="display:grid; width: 100%;">
-    <small id="progress_text">phase: idle</small>
+    <small id="progress_text">[Idle] Waiting for task ...</small>
     <input type="range" min="0" max="100" value="0" style="display:flex; flex:1;" name="progress_bar">
     <small style="text-align: end;" id="progress_value">0%</small>
     <div style="display:flex;">
@@ -110,7 +110,7 @@
 
     <!-- Auto-Filler -->
     <div id="auto_filler_form" style="display:grid; width: 100%;">
-      <div id="auto_filler_container" style="display:flex; margin-top: 4px;">
+      <div id="auto_filler_container" style="display:flex;">
         <button id="prompt_ai_button" style="flex:2;">Prompt AI</button>
         <button id="load_data_button" style="flex:1;">Load Data</button>
         <small id="loaded_output_file" style="margin-left: 4px; margin-top: 2px;">No .json file.</small>

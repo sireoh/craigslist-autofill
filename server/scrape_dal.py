@@ -15,7 +15,7 @@ from constants import (
 )
 import os
 from pathlib import Path
-from store import progress_state
+from progress_state_manager import progress_manager
 
 
 def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
@@ -163,18 +163,25 @@ def run(listingsdoc_id: str) -> Dict:
         Helpers.ensure_directories_exist()
 
         # Update progress state for scraping phase
-        progress_state.update(
-            {"phase": "scraping", "current": 0, "total": SAMPLE_SIZE, "listings": []}
+        progress_manager.set_state(
+            phase="webscraping/scraping",
+            current=0,
+            total=SAMPLE_SIZE,
+            percent=0,
+            message="[IDLE] Waiting for task ...",
         )
 
         # Gather listings to scrape
         all_urls = Helpers.load_listings_file(listingsdoc_id)
-
         sample = Helpers.sample_listings(all_urls)
 
         # Update progress state for details phase
-        progress_state.update(
-            {"phase": "details", "current": 0, "total": len(sample), "listings": []}
+        progress_manager.set_state(
+            phase="webscraping/details",
+            current=0,
+            total=len(sample),
+            percent=0,
+            message="[IDLE] Waiting for task ...",
         )
 
         # Scrape each listing
@@ -185,34 +192,38 @@ def run(listingsdoc_id: str) -> Dict:
                 time.sleep(random.uniform(3, 6))
 
                 listing = Helpers.parse_details(single_url)
+                # Always update progress (even if listing=None)
+                progress_manager.set_state(
+                    phase="webscraping/details",
+                    current=i + 1,
+                    total=len(sample),
+                    percent=int((i + 1) / len(sample) * 100),
+                    message=f"[SCRAPING] Found {i} listings so far ...",
+                )
+                # Pause for 1 second, to tell the user how many are found so far.
+                time.sleep(random.uniform(1, 2))
 
                 if listing:
                     results.append(listing)
-                    # Update the listings in progress_state with the new listing
-                    progress_state["listings"].append(listing)
 
                 # Always update progress (even if listing=None)
-                progress_state.update(
-                    {
-                        "current": i + 1,
-                        "listings": progress_state[
-                            "listings"
-                        ],  # Ensure listings is included
-                    }
+                progress_manager.set_state(
+                    phase="webscraping/details",
+                    current=i + 1,
+                    total=len(sample),
+                    percent=int((i + 1) / len(sample) * 100),
+                    message="[SCRAPING] Scraping in progress ...",
                 )
 
             except Exception as e:
                 # Log failure but continue with next listing
                 print(f"Failed to scrape {single_url}: {str(e)}")
-                progress_state.update(
-                    {
-                        "current": i + 1,
-                        "error": str(e),
-                        "failed_url": single_url,
-                        "listings": progress_state[
-                            "listings"
-                        ],  # Maintain existing listings
-                    }
+                progress_manager.set_state(
+                    phase="webscraping/details",
+                    current=i + 1,
+                    total=len(sample),
+                    percent=int((i + 1) / len(sample) * 100),
+                    message=f"[Error]: {str(e)}",
                 )
 
         # Save the output
@@ -220,21 +231,22 @@ def run(listingsdoc_id: str) -> Dict:
         output_path = Helpers.save_output(results, output_index)
 
         # Mark as done
-        progress_state.update(
-            {
-                "phase": "done",
-                "listings": progress_state[
-                    "listings"
-                ],  # Final update with all listings
-            }
+        progress_manager.set_state(
+            phase="done",
+            current=len(sample),
+            total=len(sample),
+            percent=100,
+            message="[DONE] Scraping completed!",
         )
 
         return {
             "status": "success",
             "output_file": output_path.name,
-            "listings_scraped": len(results),
+            "message": f"Scraped {len(results)} listings",
         }
 
     except Exception as e:
-        progress_state.update({"phase": "idle", "error": str(e)})
+        progress_manager.set_state(
+            phase="idle", current=0, total=0, percent=0, message=f"Error: {str(e)}"
+        )
         return {"status": "error", "message": str(e)}

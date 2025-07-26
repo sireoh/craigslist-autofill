@@ -178,7 +178,10 @@ async def __prompt_ai():
             base_url="https://router.huggingface.co/v1",
             api_key=get_ai_config()["hf_api_key"],
         )
-        return prompt_ai(client)
+        # Start processing in a separate thread
+        Thread(target=prompt_ai, args=(client,), daemon=True).start()
+
+        return {"status": "processing", "message": "AI processing started"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 

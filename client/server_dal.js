@@ -203,10 +203,10 @@ const ServerDAL = {
 
     progressBar.value = percent;
     ELEMENTS.progressValue.textContent = `${percent}%`;
-    ELEMENTS.progressText.textContent = `phase: ${data.phase}`;
+    ELEMENTS.progressText.textContent = data.message;
 
     // Stop polling if done
-    if (data.phase == "done") {
+    if (data.phase == "general/done") {
         clearInterval(intervalId);
     }
   },
