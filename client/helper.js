@@ -1,8 +1,4 @@
 const Helpers = {
-  updateConnectFormElement(isConnected) {
-    ELEMENTS.connectForm.hidden = isConnected;
-  },
-
   updateLoadContainerElement(outputFiles) {
     const data = outputFiles.data;
     const container = ELEMENTS.fetchContainer;

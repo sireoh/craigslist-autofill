@@ -178,7 +178,32 @@ const ServerDAL = {
     if (data.phase == "done") {
         clearInterval(intervalId);
     }
-  }
+  },
+
+  async setHFAPIKey(hf_api_key) {
+    try {
+      const serverHost = await MainDAL.getItemByName("serverHost") ?? "";
+      const endpoint = `${serverHost.endsWith("/") ? serverHost : serverHost + "/"}ai_model/config`;
+
+      const response = await fetch(endpoint, {
+          method: "PATCH",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ "hf_api_key": hf_api_key })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error updating config:", error);
+      return { status: "error", message: error.message };
+    }
+  },
 };
 
 // Expose globally for popup/background access

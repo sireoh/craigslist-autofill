@@ -1,18 +1,12 @@
 import json
 from pathlib import Path
 from fastapi import HTTPException, status
-from openai import OpenAI
 from helpers import Helpers
 from constants import AI_RESULTS_DIR, AI_RESULTS_CONFIG_PATH
 from models import AIConfig
 
-client = OpenAI(
-    base_url="https://router.huggingface.co/v1",
-    api_key="",
-)
 
-
-def prompt_ai():
+def prompt_ai(client):
     # Ensure the results directory exists
     AI_RESULTS_DIR.mkdir(exist_ok=True)
 

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     serverHost: await MainDAL.getItemByName("serverHost") ?? "",
     selectedPreset: await MainDAL.getItemByName("selectedPreset") ?? "",
     presets: await MainDAL.getItemByName("presets") ?? [],
+    HFAPIKey: await MainDAL.getItemByName("HFAPIKey") ?? [],
   }
 
   // Update store with stored values
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   Store.update("serverHost", db.serverHost);
   Store.update("selectedPreset", db.selectedPreset);
   Store.update("presets", db.presets);
+  Store.update("HFAPIKey", db.HFAPIKey);
 
   // Update the frontend
   __init();
@@ -35,6 +37,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // [DEBUG] Log to console
     console.log('Added server_host:', s);
+  });
+
+  // Handle set hugging face form submit
+  ELEMENTS.setHFAPIKeyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Access the input named 'hf_api_key'
+    const hf_api_key = ELEMENTS.setHFAPIKeyForm.elements['hf_api_key'].value;
+
+    // Set to the main_dal
+    MainDAL.setItemByName("HFAPIKey", hf_api_key);
+
+    // Update Store
+    Store.update("HFAPIKey", hf_api_key);
+
+    // Update in server
+    const serverResponse = await ServerDAL.setHFAPIKey(hf_api_key);
+    console.log('Server response:', serverResponse);
+
+    // [DEBUG] Log to console
+    console.log('Added Hugging Face API Key:', hf_api_key);
   });
 
   // Handle edit form submit
@@ -100,6 +123,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     ELEMENTS.serverStatus.textContent = newState.isConnected
       ? `🟢 Connected to: ${Store.getState().serverHost}`
       : '🔴 Not connected to any servers';
+
+    // Update api addition status
+    ELEMENTS.keyAddedStatus.textContent = newState.HFAPIKey
+      ? `🟢 API Key set to: ${Store.getState().HFAPIKey}`
+      : '🔴 API Key not set yet';
   });
 });
 
@@ -111,6 +139,11 @@ function __init() {
   ELEMENTS.serverStatus.textContent = state.isConnected
     ? `🟢 Connected to: ${state.serverHost}`
     : '🔴 Not connected to any servers';
+  
+  // Update api addition status
+  ELEMENTS.keyAddedStatus.textContent = state.HFAPIKey
+    ? `🟢 API Key set to: ${state.HFAPIKey}`
+    : '🔴 API Key not set yet';
 
   // Set dropdown value
   const presetsSelect = ELEMENTS.presetsForm.elements["presets_select"];

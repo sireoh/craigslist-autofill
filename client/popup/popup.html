@@ -9,12 +9,20 @@
 </head>
 
 <body>
-  <!-- Connect to Server -->
-  <div name="connect_to_server">
-    <label>connect to server</label>
+  <!-- Setup Container -->
+  <div name="setup_container">
+    <!-- Connect to Server -->
+    <small>connect to server</small>
     <form id="connect_to_server_form" style="display:flex; width:100%;">
       <input name="server_host" placeholder="https://localhost:5964/ ..." style="flex:1;" />
       <button type="submit">Connect</button>
+    </form>
+
+    <!-- Set HuggingFace API KEY -->
+    <small>set hugging face api key</small>
+    <form id="set_hugging_face_api_key_form" style="display:flex; width:100%;">
+      <input name="hf_api_key" placeholder="hf_xxxxxxxxxxxxxxxxx ..." style="flex:1;" />
+      <button type="submit">Set API Key</button>
     </form>
 
     <!-- Divider -->
@@ -23,11 +31,12 @@
 
   <!-- Main -->
   <div name="main">
-    <div name="header" style="display:flex; justify-content: space-between;">
+    <div name="header" style="display:grid;">
       <small id="is_server_connected">🔴 Not connected to any servers</small>
+      <small id="is_api_key_set">🔴 API Key not set yet</small>
     </div>
     <div name="main_container" style="display:grid">
-      <label>Create a listing:</label>
+      <small>Create a listing:</small>
       <form id="presets_form" style="display:flex; width:100%">
         <select name="presets_select" style="flex:1;">
           <option value="preset_00" name="preset_00">preset 0</option>
@@ -48,47 +57,38 @@
 
   <!-- Edit Export -->
   <div name="edit_export">
-    <form id="edit_export_container" style="display:grid; justify-items: center;">
+    <form id="edit_export_container" style="display:grid;">
       <!-- Header -->
-      <div name="edit_export_header">
-        <label>header</label>
-        <div style="display:flex">
-          <input placeholder="city" name="city" />
-          <input placeholder="zip_code" name="zip_code" />
+      <div name="edit_export_header" style="width:100%;">
+        <small>header</small>
+        <div style="display:flex; width:100%;">
+          <input placeholder="city" name="city" style="flex:1;" />
+          <input placeholder="zip_code" name="zip_code" style="flex:1;" />
         </div>
       </div>
 
       <!-- Details -->
-      <div name="edit_export_details">
-        <label>details</label>
-        <div style="display:flex">
-          <input placeholder="bedrooms" type="number" name="bedrooms" />
-          <input placeholder="bathrooms" type="number" name="bathrooms" />
+      <div name="edit_export_details" style="width:100%;">
+        <small>details</small>
+        <div style="display:flex; width:100%;">
+          <input placeholder="bedrooms" type="number" name="bedrooms" style="flex:1;" />
+          <input placeholder="bathrooms" type="number" name="bathrooms" style="flex:1;" />
         </div>
       </div>
 
       <!-- Contact -->
-      <div name="edit_export_contact">
-        <label>contact</label>
-        <div style="display:flex">
-          <input placeholder="phone_num" name="phone_num" />
-          <input placeholder="contact_name" name="contact_name" />
+      <div name="edit_export_contact" style="width:100%;">
+        <small>contact</small>
+        <div style="display:flex; width:100%;">
+          <input placeholder="phone_num" name="phone_num" style="flex:1;" />
+          <input placeholder="contact_name" name="contact_name" style="flex:1;" />
         </div>
       </div>
 
       <!-- Craigslist Query -->
-      <div name="edit_export_craigslist_query" style="text-align: center;">
-        <label>craigslist query</label>
-        <div style="display:flex">
-          <input placeholder="input query ..." value="2 bedroom basement" name="craigslist_query" />
-        </div>
-      </div>
-
-      <!-- Footer Buttons -->
-      <div name="edit_export_footer_buttons">
-        <div style="display:flex">
-          <button type="submit">Save</button>
-        </div>
+      <div name="edit_export_craigslist_query" style="display:flex; width:100%;">
+        <input placeholder="input craigslist query ..." value="2 bedroom basement" name="craigslist_query" style="flex:1;"/>
+        <button type="submit">Save</button>
       </div>
     </form>
   </div>

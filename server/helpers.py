@@ -172,7 +172,7 @@ class Helpers(abc.ABC):
                 if os.path.exists("ai_config.json"):
                     with open("ai_config.json", "r") as f:
                         contents = json.load(f)
-                    return {"data": contents}
+                    return contents
                 else:
                     return {"message": "ai_config.json file doesn't exist"}
             except json.JSONDecodeError:

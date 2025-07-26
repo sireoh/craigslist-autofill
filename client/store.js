@@ -2,6 +2,7 @@
 
 const state = {
   isConnected: false,
+  HFAPIKey: "",
   serverHost: "",
   selectedPreset: "",
   presetData: {},

@@ -1,6 +1,7 @@
 from threading import Thread
 from typing import Optional
 from fastapi import FastAPI
+from openai import OpenAI
 
 from ai_model_dal import get_ai_config, prompt_ai, update_ai_config
 from client_dal import load_output_file, update_config
@@ -141,14 +142,16 @@ async def __update_ai_config(req: AIConfig):
     return update_ai_config(req)
 
 
-@app.get("/ai_model/config")
-async def __get_ai_config():
-    return get_ai_config()
-
-
 @app.get("/ai_model/prompt_ai")
 async def __prompt_ai():
-    return prompt_ai()
+    try:
+        client = OpenAI(
+            base_url="https://router.huggingface.co/v1",
+            api_key=get_ai_config()["hf_api_key"],
+        )
+        return prompt_ai(client)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 
 if __name__ == "__main__":
