@@ -43,7 +43,7 @@ const Helpers = {
         const serverResponse = await ServerDAL.loadOutputFile(presetData, filename);
         console.log('Server response:', serverResponse);
 
-        ELEMENTS.loadedOutputText.textContent = `Loaded: ${filename}`;
+        ELEMENTS.loadedOutputText.textContent = `${filename.split(".")[0]}`;
       });
 
       // Assemble buttons and row

@@ -99,6 +99,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // [DEBUG] Log to console
     console.log('Added preset:', presetData);
+
+    // Alert To User / Client
+    alert(`[ADDED] ${JSON.stringify(presetData)}`);
   });
 
   // Handle auto filler form click
@@ -184,7 +187,8 @@ function __init() {
       Helpers.updateListingsContainerElement(listings);
 
       // Show success message
-      alert(response.message || "Listings gathered successfully!");
+      const alertText = `${response.message}\nView ${response.output_file} by clicking "Fetch Listings".`;
+      alert(alertText);
     } catch (error) {
       console.error('Error:', error);
       alert(`Failed to gather listings: ${error.message}`);

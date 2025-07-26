@@ -95,7 +95,7 @@ def gather_listings(req: Optional[GatherRequest] = None) -> dict[str, str]:
         return {"message": "No listings found in search results"}
 
     return {
-        "message": f"Found {len(all_urls)} listings to scrape",
+        "message": f"Successfully gathered {len(all_urls)} listings.",
         "output_file": str(output_filename),
         "status": "success",
     }
