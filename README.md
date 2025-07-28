@@ -1,40 +1,29 @@
-# extension installation
+# Extension Installation
 
 Click "Load Temporary Add-on" at
 
-```
+```bash
+git clone </craigslist-autofill>.git
 about:debugging#/runtime/this-firefox
+click manifest.json
+press open
 ```
 
-# curl request
-
-```bash
-curl -X POST http://localhost:5694/start_scrape \
-  -H "Content-Type: application/json" \
-  -d '{"query": "2 bedroom basement", "max_results": 10, "delay": 3}'
-
-# OR
-
-curl -X POST http://localhost:5694/start_scrape \
-  -H "Content-Type: application/json" \
-  -d '{"query": "2 bedroom basement"}'
-
-curl -X PATCH http://localhost:5694/ai_model/config \
-  -H 'Content-Type: application/json' \
-  -d '{ "hf_api_key": "your_huggingface_api_key_here" }'
-```
-
-# to add
-
-```bash
-https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite?tab=readme-ov-file#installation-firefox
-```
-
-# setup server
+# Setup Server
 
 ```shell
 python -m venv .venv
 .venv/Scripts/activate.ps1
-pip install requirements.txt
+pip install -r requirements.txt
 python server.py
 ```
+
+# Instructions on how to use :
+
+1. Spin up the server, you can find the instructions under "Setup server"
+
+2.
+
+Click "Make new Post" on craigslist
+Housing offered
+apartments / housing for rent

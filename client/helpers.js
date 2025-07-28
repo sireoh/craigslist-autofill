@@ -376,8 +376,7 @@ const Helpers = {
   },
 
   truncateAPIKey(original) {
-    const truncated = `${original.substring(0, Math.ceil(original.length * CONSTANTS.apiKeyMaxLen))}⁎⁎⁎⁎⁎⁎⁎⁎`;
-    return truncated;
+    return original;
   },
 
   "Webscrapers" : {
