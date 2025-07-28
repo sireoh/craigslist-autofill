@@ -33,3 +33,18 @@ BATHROOMS = {
     "8.5": "18",
     "9+": "19"
 }
+
+HOUSING_TYPE = {
+    "apartment": 1,
+    "condo": 2,
+    "cottage/cabin": 3,
+    "duplex": 4,
+    "flat": 5,
+    "house": 6,
+    "in-law": 7,
+    "loft": 8,
+    "townhouse": 9,
+    "manufactured": 10,
+    "assisted living": 11,
+    "land": 12
+}

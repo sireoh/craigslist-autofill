@@ -11,6 +11,7 @@ const POSTING_FORM = {
 
   "DEFAULTS" : {
     "rent_period" : document.getElementById("postingForm").elements['rent_period'],
+    "housing_type" : document.getElementById("postingForm").elements['housing_type'],
     "laundry" : document.getElementById("postingForm").elements['laundry'],
     "parking" : document.getElementById("postingForm").elements['parking'],
     "no_smoking" : document.getElementById("postingForm").elements['no_smoking'],

@@ -128,10 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       : '🔴 Not connected to any servers';
 
     // Update api addition status
-    const _a = Store.getState().HFAPIKey
-    ELEMENTS.keyAddedStatus.textContent = newState.HFAPIKey
-      ? `🟢 API Key set to: ${Helpers.truncateAPIKey(_a)}`
-      : '🔴 API Key not set yet';
+    Helpers.GUI.updateApiButtonStatus(newState);
   });
 });
 
@@ -145,10 +142,7 @@ function __init() {
     : '🔴 Not connected to any servers';
   
   // Update api addition status
-  const _a = Store.getState().HFAPIKey
-  ELEMENTS.keyAddedStatus.textContent = state.HFAPIKey
-    ? `🟢 API Key set to: ${Helpers.truncateAPIKey(_a)}`
-    : '🔴 API Key not set yet';
+  Helpers.GUI.updateApiButtonStatus(state);
 
   // Set dropdown value
   const presetsSelect = ELEMENTS.presetsForm.elements["presets_select"];

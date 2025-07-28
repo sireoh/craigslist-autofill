@@ -375,10 +375,6 @@ const Helpers = {
     container.appendChild(ul);
   },
 
-  truncateAPIKey(original) {
-    return original;
-  },
-
   "Webscrapers" : {
     async gatherListings() {
       try {
@@ -423,14 +419,33 @@ const Helpers = {
       }
     },
 
-    updateProgressGUIManually(progressBarValue, progressText) {
-      const form = ELEMENTS.progressForm.elements;
-      const progressBar = form["progress_bar"];
+    truncateAPIKey(original) {
+      if (!original || original.length < 3) return original; // Handle edge cases
 
-      progressBar.value = progressBarValue;
-      ELEMENTS.progressValue.textContent = `${progressBarValue}%`;
-      ELEMENTS.progressText.textContent = progressText;
+      const shortened = original.substring(0, Math.ceil(original.length * 0.66));
+      
+      const oneThird = Math.floor(shortened.length / 3);
+      const firstPart = shortened.substring(0, oneThird);
+      const lastPart = shortened.substring(shortened.length - oneThird);
+
+      return `${firstPart}●●●●${lastPart}`;
     },
+
+    async updateApiButtonStatus(state) {
+      const db = {"HFAPIKey" : await MainDAL.getItemByName("HFAPIKey")};
+      if (typeof db.HFAPIKey === "string") {
+        if (db.HFAPIKey.startsWith("hf_")) {
+          console.log("[DEBUG] Hugging face API Key is valid:", db.HFAPIKey);
+          ELEMENTS.keyAddedStatus.textContent = `🟢 API Key set to: ${Helpers.GUI.truncateAPIKey(db.HFAPIKey)}`;
+        } else {
+          console.log("[DEBUG] Hugging face API Key is invalid:", db.HFAPIKey);
+          ELEMENTS.keyAddedStatus.textContent = `🔴 API Key is invalid: ${db.HFAPIKey}`;
+        }
+      } else {
+        console.log("[DEBUG] Hugging face API Key is not a string:", db.HFAPIKey);
+        ELEMENTS.keyAddedStatus.textContent = `🔴 API Key not set yet: ${db.HFAPIKey}`;
+      }
+    }
   },
 
   "Time" : {
