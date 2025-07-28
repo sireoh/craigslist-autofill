@@ -13,7 +13,11 @@
   "content_scripts": [
     {
       "matches": ["*://*.craigslist.org/*"],
-      "js": ["DOM/posting_form.js", "DOM/content.js"]
+      "js": [
+        "DOM/posting_form.js",
+        "DOM/content.js",
+        "DOM/enums.js"
+      ]
     }
   ],
 
