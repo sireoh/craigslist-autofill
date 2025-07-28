@@ -417,6 +417,10 @@ const Helpers = {
       // Stop polling if done
       if (data.phase == "general/done") {
           clearInterval(intervalId);
+
+          if (data.message == "[DONE] AI processing completed successfully!") {
+            alert(`Saved to results.json, press "Fill form" to load.`);
+          }
       }
     },
 
