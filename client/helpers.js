@@ -419,6 +419,15 @@ const Helpers = {
       }
     },
 
+    updateProgressGUIManually(progressBarValue, progressText) {
+      const form = ELEMENTS.progressForm.elements;
+      const progressBar = form["progress_bar"];
+
+      progressBar.value = progressBarValue;
+      ELEMENTS.progressValue.textContent = `${progressBarValue}%`;
+      ELEMENTS.progressText.textContent = progressText;
+    },
+
     truncateAPIKey(original) {
       if (!original || original.length < 3) return original; // Handle edge cases
 
